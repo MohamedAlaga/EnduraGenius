@@ -1,4 +1,6 @@
-﻿namespace EnduraGenius.API.Repositories.InbodyRepository
+﻿using EnduraGenius.API.Models.Domain;
+
+namespace EnduraGenius.API.Repositories.InbodyRepository
 {
     public interface IInbodyRepository
     {
@@ -12,6 +14,11 @@
         float CalculateRecommendedWaterIntake(float weight);
         float CalculateIdealBodyWeight(float height, bool isMale);
         float CalculateDailyProteinNeeds(float weight,int activityLevel);
+        Task<User?> GetUserById(string userId);
+        Task<List<Inbody>> GetInbodyByUserId(string id);
+        Task<Inbody?> GetInbodyAsync(Guid id, string userId);
+        Task<Inbody?> InsertInbodyAsync(string userId, int ActivityLevel, string name);
+        Task<bool> DeleteInbody(Guid ID, string userId);
 
     }
 }

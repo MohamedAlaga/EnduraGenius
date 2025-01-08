@@ -3,6 +3,7 @@ using EnduraGenius.API.Data;
 using EnduraGenius.API.Mappings;
 using EnduraGenius.API.Models.Domain;
 using EnduraGenius.API.Repositories;
+using EnduraGenius.API.Repositories.InbodyRepository;
 using EnduraGenius.API.Repositories.MuscleRepositories;
 using EnduraGenius.API.Repositories.PlanRepositories;
 using EnduraGenius.API.Repositories.PlansUsersRepositories;
@@ -64,6 +65,7 @@ builder.Services.AddScoped<IPlanRepository, SQLPLansRepository>();
 builder.Services.AddScoped<IPlansUsersRepository, SQLPlansUsersRepository>();
 builder.Services.AddScoped<IPlanWorkoutsRepository, SQLPlanWorkoutRepository>();
 builder.Services.AddScoped<IUserWorkoutRepository,SQLUserWorkoutRepository>();
+builder.Services.AddScoped<IInbodyRepository,SQLInbodyRepository>();
 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

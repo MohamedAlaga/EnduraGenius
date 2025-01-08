@@ -17,6 +17,7 @@ namespace EnduraGenius.API.Data
         public DbSet<PlanWorkout> PlanWorkouts { get; set; }
         public DbSet<Workout> Workouts { get; set; }
         public DbSet<UserWorkout> UserWorkouts { get; set; }
+        public DbSet<Inbody> Inbodies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

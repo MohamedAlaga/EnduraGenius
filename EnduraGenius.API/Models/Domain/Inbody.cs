@@ -11,12 +11,12 @@
         public float BMI { get; set; }
         //basal metabolic rate
         public float BMR { get; set; }
+        //body fat percentage
+        public float BFP { get; set; }
         //fat free mass
         public float FFM { get; set; }
         //lean body mass
         public float LBM { get; set; }
-        //body fat percentage
-        public float BFP { get; set; }
         //total body water
         public float TBW { get; set; }
         //caloric needs

@@ -33,6 +33,15 @@ namespace EnduraGenius.API.Mappings
                 .ForPath(x => x.Workout.Name, opt => opt.MapFrom(x => x.Name))
                 .ForPath(x => x.Workout.Description, opt => opt.MapFrom(x => x.Descreption))
                 .ReverseMap();
+            CreateMap<InbodyResponseDTO, Inbody>()
+                .ForMember(x => x.BMI, opt => opt.MapFrom(x => x.bodyMassIndex))
+                .ForMember(x => x.BMR, opt => opt.MapFrom(x => x.basalMetabolicRate))
+                .ForMember(x => x.BFP, opt => opt.MapFrom(x => x.bodyFatPercentage))
+                .ForMember(x => x.FFM, opt => opt.MapFrom(x => x.fatFreeMass))
+                .ForMember(x => x.LBM, opt => opt.MapFrom(x => x.leanBodyMass))
+                .ForMember(x => x.TBW, opt => opt.MapFrom(x => x.totalBodyWater))
+                .ForPath(x => x.User.UserName, opt => opt.MapFrom(x => x.userName))
+                .ReverseMap();
         }
     }
 }
