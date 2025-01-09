@@ -9,6 +9,7 @@ using EnduraGenius.API.Repositories.PlanRepositories;
 using EnduraGenius.API.Repositories.PlansUsersRepositories;
 using EnduraGenius.API.Repositories.PlanWorkoutsRepositories;
 using EnduraGenius.API.Repositories.TokenRepositories;
+using EnduraGenius.API.Repositories.UserRepository;
 using EnduraGenius.API.Repositories.UserWorkoutRepositories;
 using EnduraGenius.API.Repositories.WorkoutsRepositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -66,6 +67,7 @@ builder.Services.AddScoped<IPlansUsersRepository, SQLPlansUsersRepository>();
 builder.Services.AddScoped<IPlanWorkoutsRepository, SQLPlanWorkoutRepository>();
 builder.Services.AddScoped<IUserWorkoutRepository,SQLUserWorkoutRepository>();
 builder.Services.AddScoped<IInbodyRepository,SQLInbodyRepository>();
+builder.Services.AddScoped<IUserRepository, SQLUserRepository>();
 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -42,6 +42,7 @@ namespace EnduraGenius.API.Mappings
                 .ForMember(x => x.TBW, opt => opt.MapFrom(x => x.totalBodyWater))
                 .ForPath(x => x.User.UserName, opt => opt.MapFrom(x => x.userName))
                 .ReverseMap();
+            CreateMap<UserProfileResponseDTO,User>().ReverseMap();
         }
     }
 }
