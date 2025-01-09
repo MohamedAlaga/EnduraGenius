@@ -65,7 +65,7 @@ namespace EnduraGenius.API.Controllers
         [Route("body")]
         public async Task<IActionResult> updateUserBody([FromBody] UpdateUserBodyDTO updateUserBodyDTO)
         {
-            var user = await this._userRepository.EditUserBodyData("a4059c44-8a45-4200-bfa8-bd618696d3ea", updateUserBodyDTO.Weight, updateUserBodyDTO.Tall, updateUserBodyDTO.Age, updateUserBodyDTO.IsMale);
+            var user = await this._userRepository.EditUserBodyData("a4059c44-8a45-4200-bfa8-bd618696d3ea", updateUserBodyDTO.Weight, updateUserBodyDTO.Tall, updateUserBodyDTO.Age, updateUserBodyDTO.IsMale, updateUserBodyDTO.IsPublic);
             if (user == null)
             {
                 return NotFound();

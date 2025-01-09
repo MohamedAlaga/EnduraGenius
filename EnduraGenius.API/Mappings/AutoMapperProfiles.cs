@@ -43,6 +43,7 @@ namespace EnduraGenius.API.Mappings
                 .ForPath(x => x.User.UserName, opt => opt.MapFrom(x => x.userName))
                 .ReverseMap();
             CreateMap<UserProfileResponseDTO,User>().ReverseMap();
+            CreateMap<LeaderBoardResponseDTO,User>().ReverseMap();
         }
     }
 }

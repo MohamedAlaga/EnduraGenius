@@ -9,6 +9,6 @@ namespace EnduraGenius.API.Models.Domain
         public int TallInCm { get; set; }
         public int Age { get; set; }
         public bool IsMale { get; set; }
-
+        public bool isPublic { get; set; } = false;
     }
 }

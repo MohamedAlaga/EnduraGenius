@@ -6,5 +6,6 @@
         public int? Tall { get; set; }
         public int? Age { get; set; }
         public bool? IsMale { get; set; }
+        public bool? IsPublic { get;set; }
     }
 }
