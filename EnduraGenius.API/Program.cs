@@ -3,6 +3,7 @@ using EnduraGenius.API.Data;
 using EnduraGenius.API.Mappings;
 using EnduraGenius.API.Models.Domain;
 using EnduraGenius.API.Repositories;
+using EnduraGenius.API.Repositories.EmailSenderRepository;
 using EnduraGenius.API.Repositories.InbodyRepository;
 using EnduraGenius.API.Repositories.MuscleRepositories;
 using EnduraGenius.API.Repositories.PlanRepositories;
@@ -58,6 +59,7 @@ builder.Services.AddSwaggerGen(
     });
 builder.Services.AddDbContext<EnduraGeniusDBContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("mysql")));
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IWorkoutsRepository, SQLWorkoutsRepository>();
@@ -100,6 +102,10 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredLength = 6;
 });
 
+builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+{
+    options.TokenLifespan = TimeSpan.FromHours(1);
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
