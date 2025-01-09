@@ -31,6 +31,11 @@ namespace EnduraGenius.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUserPlans()
         {
+            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (CurrentUserId == null)
+            {
+                return Unauthorized();
+            }
             var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userid == null)
             {
@@ -40,7 +45,7 @@ namespace EnduraGenius.API.Controllers
             var AllPlans = new List<Plan>();
             foreach (var userPlan in userPlans)
             {
-                var plan = await _planRepository.GetPlanById(userPlan.PlanId);
+                var plan = await _planRepository.GetPlanById(userPlan.PlanId, CurrentUserId);
                 if (plan != null)
                 {
                     AllPlans.Add(plan);
@@ -49,7 +54,7 @@ namespace EnduraGenius.API.Controllers
             var plansDto = new List<PlanResponseDTO>();
             foreach (var plan in AllPlans)
             {
-                var PlansWorkouts = await _planWorkoutsRepository.GetPlanWorkoutByPlanId(plan.Id);
+                var PlansWorkouts = await _planWorkoutsRepository.GetPlanWorkoutByPlanId(plan.Id,CurrentUserId);
                 var planDto = _mapper.Map<PlanResponseDTO>(plan);
                 planDto.workouts = _mapper.Map<List<PlanWorkoutsResponseDTO>>(PlansWorkouts);
                 plansDto.Add(planDto);
@@ -70,12 +75,12 @@ namespace EnduraGenius.API.Controllers
             {
                 return NotFound();
             }
-            var plan = await _planRepository.GetPlanById(userCurrentPlan.PlanId);
+            var plan = await _planRepository.GetPlanById(userCurrentPlan.PlanId,userid);
             if (userCurrentPlan == null)
             {
                 return NotFound();
             }
-            var PlansWorkouts = await _planWorkoutsRepository.GetPlanWorkoutByPlanId(plan.Id);
+            var PlansWorkouts = await _planWorkoutsRepository.GetPlanWorkoutByPlanId(plan.Id,userid);
             var planDto = _mapper.Map<PlanResponseDTO>(plan);
             planDto.workouts = _mapper.Map<List<PlanWorkoutsResponseDTO>>(PlansWorkouts);
             return Ok(planDto);

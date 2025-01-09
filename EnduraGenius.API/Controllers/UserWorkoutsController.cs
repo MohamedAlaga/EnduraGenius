@@ -50,18 +50,14 @@ namespace EnduraGenius.API.Controllers
             {
                 return Unauthorized();
             }
-            var userWorkout = await _userWorkoutRepository.GetUserWorkoutByWorkoutId(userId,id);
-            if (userWorkout == null)
-            {
-                return NotFound();
-            }
-            var updatedUserWorkout = await _userWorkoutRepository.UpdateUserWorkout(userWorkout.Id, updateUserWorkoutRequestDTO.MaxWeight, updateUserWorkoutRequestDTO.LastWeight, updateUserWorkoutRequestDTO.TimesPerformed);
+
+            var updatedUserWorkout = await _userWorkoutRepository.UpdateUserWorkout(id,userId, updateUserWorkoutRequestDTO.MaxWeight, updateUserWorkoutRequestDTO.LastWeight, updateUserWorkoutRequestDTO.TimesPerformed);
             if (updatedUserWorkout == null)
             {
                 return BadRequest();
             }
-            var finalworkout = await _userWorkoutRepository.GetUserWorkoutByWorkoutId(userId, updatedUserWorkout.Id);
-            var mapper = _mapper.Map<UserWorkoutResponseDTO>(finalworkout);
+            var finaluserWorkout = await _userWorkoutRepository.GetUserWorkoutByWorkoutId(userId, id);
+            var mapper = _mapper.Map<UserWorkoutResponseDTO>(finaluserWorkout);
             return Ok(mapper);
         }
     }

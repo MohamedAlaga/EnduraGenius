@@ -38,11 +38,16 @@ namespace EnduraGenius.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllplans()
         {
-            var plans = await _plansRepository.GetPublicPlans();
+            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (CurrentUserId == null)
+            {
+                return Unauthorized();
+            }
+            var plans = await _plansRepository.GetPublicPlans(CurrentUserId);
             var plansDto = new List<PlanResponseDTO>();
             foreach (var plan in plans)
             {
-                var PlansWorkouts = await _planWorkoutsRepository.GetPlanWorkoutByPlanId(plan.Id);
+                var PlansWorkouts = await _planWorkoutsRepository.GetPlanWorkoutByPlanId(plan.Id,CurrentUserId);
                 var planDto = _mapper.Map<PlanResponseDTO>(plan);
                 planDto.workouts = _mapper.Map<List<PlanWorkoutsResponseDTO>>(PlansWorkouts);
                 plansDto.Add(planDto);
@@ -55,12 +60,17 @@ namespace EnduraGenius.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetPlanById([FromRoute] Guid id)
         {
-            var plan = await _plansRepository.GetPlanById(id);
+            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (CurrentUserId == null)
+            {
+                return Unauthorized();
+            }
+            var plan = await _plansRepository.GetPlanById(id, CurrentUserId);
             if (plan == null)
             {
                 return NotFound();
             }
-            var PlansWorkouts = await _planWorkoutsRepository.GetPlanWorkoutByPlanId(plan.Id);
+            var PlansWorkouts = await _planWorkoutsRepository.GetPlanWorkoutByPlanId(plan.Id, CurrentUserId);
             var planDto = _mapper.Map<PlanResponseDTO>(plan);
             planDto.workouts = _mapper.Map<List<PlanWorkoutsResponseDTO>>(PlansWorkouts);
             return Ok(planDto);
@@ -97,7 +107,7 @@ namespace EnduraGenius.API.Controllers
                 await _userWorkoutRepository.CreateUserWorkout(workout, CurrentUserId);
             }
             await _plansUsersRepository.CreatePlanUser(newplan, CurrentUserId);
-            var PlansWorkouts = await _planWorkoutsRepository.GetPlanWorkoutByPlanId(newplan.Id);
+            var PlansWorkouts = await _planWorkoutsRepository.GetPlanWorkoutByPlanId(newplan.Id,CurrentUserId);
             var planDto = _mapper.Map<PlanResponseDTO>(newplan);
             planDto.workouts = _mapper.Map<List<PlanWorkoutsResponseDTO>>(PlansWorkouts);
 
@@ -111,17 +121,22 @@ namespace EnduraGenius.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> UpdatePlan([FromRoute] Guid id, [FromBody] UpdatePlanRequestDTO plan)
         {
-            var planToUpdate = await _plansRepository.GetPlanById(id);
+            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (CurrentUserId == null)
+            {
+                return Unauthorized();
+            }
+            var planToUpdate = await _plansRepository.GetPlanById(id,CurrentUserId);
             if (planToUpdate == null)
             {
                 return NotFound();
             }
-            var updatedPlan = await _plansRepository.UpdatePlan(id, plan.PlanName, plan.PlanDescription, plan.IsPublic);
+            var updatedPlan = await _plansRepository.UpdatePlan(id,CurrentUserId, plan.PlanName, plan.PlanDescription, plan.IsPublic);
             if (updatedPlan == null)
             {
                 return BadRequest();
             }
-            var PlansWorkouts = await _planWorkoutsRepository.GetPlanWorkoutByPlanId(updatedPlan.Id);
+            var PlansWorkouts = await _planWorkoutsRepository.GetPlanWorkoutByPlanId(updatedPlan.Id, CurrentUserId);
             var planDto = _mapper.Map<PlanResponseDTO>(updatedPlan);
             planDto.workouts = _mapper.Map<List<PlanWorkoutsResponseDTO>>(PlansWorkouts);
             return Ok(planDto);

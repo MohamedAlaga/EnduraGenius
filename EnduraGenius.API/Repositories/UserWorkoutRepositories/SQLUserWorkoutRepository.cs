@@ -29,10 +29,10 @@ namespace EnduraGenius.API.Repositories.UserWorkoutRepositories
             await _enduraGeniusDBContext.SaveChangesAsync();
             return NewUserWorkout;
         }
-        public async Task<bool> DeleteUserWorkout(Guid id)
+        public async Task<bool> DeleteUserWorkout(Guid id, string userId)
         {
             var UserWorkout = await _enduraGeniusDBContext.UserWorkouts.FindAsync(id);
-            if (UserWorkout == null)
+            if (UserWorkout == null || UserWorkout.UserId != userId)
             {
                 return false;
             }
@@ -40,9 +40,9 @@ namespace EnduraGenius.API.Repositories.UserWorkoutRepositories
             await _enduraGeniusDBContext.SaveChangesAsync();
             return true;
         }
-        public async Task<UserWorkout?> GetUserWorkoutById(Guid id)
+        public async Task<UserWorkout?> GetUserWorkoutById(Guid id, string userId)
         {
-            return await _enduraGeniusDBContext.UserWorkouts.FindAsync(id);
+            return await _enduraGeniusDBContext.UserWorkouts.Where(x => x.Id == id && x.UserId == userId).FirstOrDefaultAsync();
         }
         public async Task<List<UserWorkout>> GetUserWorkoutByUserId(string userId, string? filterOn, string? filterQuery, int pageNumber, int pageSize)
         {
@@ -75,12 +75,12 @@ namespace EnduraGenius.API.Repositories.UserWorkoutRepositories
         }
         public async Task<UserWorkout?> GetUserWorkoutByWorkoutId(string userId, Guid WorkoutId)
         {
-            return await _enduraGeniusDBContext.UserWorkouts.Include(x => x.Workout).FirstOrDefaultAsync(x => x.UserId == userId && x.WorkoutId == WorkoutId);
+            return await _enduraGeniusDBContext.UserWorkouts.Include(x => x.Workout).Where(x => x.UserId == userId && x.WorkoutId == WorkoutId).FirstOrDefaultAsync();
         }
-        public async Task<UserWorkout?> UpdateUserWorkout(Guid id, float? MaxWeight, float? LastWeight,int? TimesPerformed)
+        public async Task<UserWorkout?> UpdateUserWorkout(Guid id, string userId, float? MaxWeight, float? LastWeight,int? TimesPerformed)
         {
-            var UserWorkout = await _enduraGeniusDBContext.UserWorkouts.FindAsync(id);
-            if (UserWorkout == null)
+            var UserWorkout = await _enduraGeniusDBContext.UserWorkouts.Where(x => x.WorkoutId == id && x.UserId == userId).FirstOrDefaultAsync();
+            if (UserWorkout == null )
             {
                 return null;
             }

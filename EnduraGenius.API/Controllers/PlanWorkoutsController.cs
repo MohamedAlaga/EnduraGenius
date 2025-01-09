@@ -1,8 +1,10 @@
-﻿using AutoMapper;
+﻿using System.Security.Claims;
+using AutoMapper;
 using EnduraGenius.API.Models.Domain;
 using EnduraGenius.API.Models.DTO;
 using EnduraGenius.API.Repositories.PlanRepositories;
 using EnduraGenius.API.Repositories.PlanWorkoutsRepositories;
+using EnduraGenius.API.Repositories.UserWorkoutRepositories;
 using EnduraGenius.API.Repositories.WorkoutsRepositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -18,25 +20,33 @@ namespace EnduraGenius.API.Controllers
         private readonly IPlanWorkoutsRepository _planWorkoutsRepository;
         private readonly IPlanRepository _planRepository;
         private readonly IWorkoutsRepository _workoutsRepository;
+        private readonly IUserWorkoutRepository _userWorkoutRepository;
         private readonly IMapper _mapper;
-        public PlanWorkoutsController(IPlanWorkoutsRepository planWorkoutsRepository, IPlanRepository planRepository, IWorkoutsRepository _workoutsRepository, IMapper Imapper)
+        public PlanWorkoutsController(IPlanWorkoutsRepository planWorkoutsRepository, IPlanRepository planRepository, IWorkoutsRepository _workoutsRepository, IMapper Imapper, IUserWorkoutRepository userWorkoutRepository)
         {
             this._planWorkoutsRepository = planWorkoutsRepository;
             this._planRepository = planRepository;
             this._workoutsRepository = _workoutsRepository;
             this._mapper = Imapper;
+            this._userWorkoutRepository = userWorkoutRepository;
+
         }
 
         [HttpPut]
         [Route("{id:Guid}")]
         public async Task<IActionResult> UpdatePlanWorkout([FromRoute] Guid id, [FromBody] UpdatePlanWorkoutRequestDTO newWorkout)
         {
-            var isUpdated = await _planWorkoutsRepository.UpdatePlanWorkout(id, newWorkout.NewWorkoutId, newWorkout.NewReps, newWorkout.NewDayNumber, newWorkout.NewOrder);
+            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (CurrentUserId == null)
+            {
+                return Unauthorized();
+            }
+            var isUpdated = await _planWorkoutsRepository.UpdatePlanWorkout(id,CurrentUserId, newWorkout.NewWorkoutId, newWorkout.NewReps, newWorkout.NewDayNumber, newWorkout.NewOrder);
             if (isUpdated == null)
             {
                 return BadRequest();
             }
-            var NewPlanWorkouts = await _planWorkoutsRepository.GetPlanWorkoutById(isUpdated.Id);
+            var NewPlanWorkouts = await _planWorkoutsRepository.GetPlanWorkoutById(isUpdated.Id, CurrentUserId);
             var newPlanDto = _mapper.Map<PlanWorkoutsResponseDTO>(NewPlanWorkouts);
             return Ok(newPlanDto);
         }
@@ -45,7 +55,12 @@ namespace EnduraGenius.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetPlanWorkoutById([FromRoute] Guid id)
         {
-            var planWorkout = await _planWorkoutsRepository.GetPlanWorkoutById(id);
+            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (CurrentUserId == null)
+            {
+                return Unauthorized();
+            }
+            var planWorkout = await _planWorkoutsRepository.GetPlanWorkoutById(id, CurrentUserId);
             if (planWorkout == null)
             {
                 return NotFound();
@@ -56,7 +71,12 @@ namespace EnduraGenius.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePlanWorkout([FromBody] CreatePlanWorkoutRequestDTO planWorkout)
         {
-            var plan = await _planRepository.GetPlanById(planWorkout.Plan);
+            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (CurrentUserId == null)
+            {
+                return Unauthorized();
+            }
+            var plan = await _planRepository.GetPlanById(planWorkout.Plan,CurrentUserId);
             if (plan == null)
             {
                 return BadRequest("incorrect plan id");
@@ -71,7 +91,11 @@ namespace EnduraGenius.API.Controllers
             {
                 return BadRequest("incorrect data");
             }
-            var newPlanWorkout = await _planWorkoutsRepository.GetPlanWorkoutById(planWorkoutCreated.Id);
+            var userWorkout = await _userWorkoutRepository.CreateUserWorkout(workout, CurrentUserId);
+            if (userWorkout == null) {
+                return BadRequest("incorrect data");
+            }
+            var newPlanWorkout = await _planWorkoutsRepository.GetPlanWorkoutById(planWorkoutCreated.Id, CurrentUserId);
             var planWorkoutDto = _mapper.Map<PlanWorkoutsResponseDTO>(newPlanWorkout);
             return CreatedAtAction(nameof(GetPlanWorkoutById), new { id = planWorkoutCreated.Id }, planWorkoutDto);
         }
@@ -80,7 +104,12 @@ namespace EnduraGenius.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> DeletePlanWorkout([FromRoute] Guid id)
         {
-            var isDeleted = await _planWorkoutsRepository.DeletePlanWorkout(id);
+            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (CurrentUserId == null)
+            {
+                return Unauthorized();
+            }
+            var isDeleted = await _planWorkoutsRepository.DeletePlanWorkout(id,CurrentUserId);
             if (isDeleted == false)
             {
                 return NotFound();

@@ -10,12 +10,12 @@ using EnduraGenius.API.Repositories.WorkoutsRepositories;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
-
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJhZGVsQGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiIyOWIwOTc1Yy1iMzJmLTQ4NDItOTg4YS1lMDM4ZjA0NzBmZGUiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNzM2NDE0MDgwLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDYzLyIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjcwNjMvIn0.tRDeKSyXkq1qfZ_Onn_hY-y5VOVSEWtHxcz-04-HTxo
 namespace EnduraGenius.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "admin")]
+    [Authorize]
     public class WorkoutController : ControllerBase
     {
         private readonly EnduraGeniusDBContext _dbcontext;
@@ -59,6 +59,7 @@ namespace EnduraGenius.API.Controllers
         // Create a new workout
         // done
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateWorkout([FromBody] CreateWorkoutRequestDTO createWorkoutRequestDTO)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -92,6 +93,7 @@ namespace EnduraGenius.API.Controllers
         // done
         [HttpPut]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateWorkout([FromRoute] Guid id, [FromBody] GetWorkoutDto updateWorkoutDto)
         {
             var workout = await _workoutsRepository.GetWorkoutById(id);
@@ -112,6 +114,7 @@ namespace EnduraGenius.API.Controllers
         // done
         [HttpDelete]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteWorkout([FromRoute] Guid id)
         {
             var workout = await _workoutsRepository.DeleteWorkout(id);
@@ -126,6 +129,7 @@ namespace EnduraGenius.API.Controllers
         // done
         [HttpGet]
         [Route("uncertified")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetUncertifiedWorkouts([FromQuery] string? filterOn, [FromQuery] string? filterQuery, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
         {
             var workouts = await _workoutsRepository.GetWorkouts(filterOn, filterQuery, pageNumber, pageSize, false);
@@ -137,6 +141,7 @@ namespace EnduraGenius.API.Controllers
         // done
         [HttpPut]
         [Route("certify/{id:Guid}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> ChangeCertificationStatus([FromRoute] Guid id)
         {
             var workout = await _workoutsRepository.ChangeCertificationStatus(id);

@@ -48,9 +48,9 @@ namespace EnduraGenius.API.Repositories.PlanRepositories
             return true;
         }
 
-        public async Task<Plan?> GetPlanById(Guid id)
+        public async Task<Plan?> GetPlanById(Guid id, string userId)
         {
-            return await _context.Plans.Include(x => x.planCreator).Where(x=> x.Id == id).FirstOrDefaultAsync();
+            return await _context.Plans.Include(x => x.planCreator).Where(x=> x.Id == id).Where(x=> x.IsPublic || x.PlanCreatedBy ==userId).FirstOrDefaultAsync();
         }
 
         public async Task<List<Plan>> GetPlansByCreatorId(string userId)
@@ -58,15 +58,15 @@ namespace EnduraGenius.API.Repositories.PlanRepositories
             return await _context.Plans.Include(x => x.planCreator).Where(x => x.PlanCreatedBy == userId).ToListAsync();
         }
 
-        public async Task<List<Plan>> GetPublicPlans()
+        public async Task<List<Plan>> GetPublicPlans(string userId)
         {
-            return await _context.Plans.Include(x => x.planCreator).Where(x => x.IsPublic == false).ToListAsync();
+            return await _context.Plans.Include(x => x.planCreator).Where(x => x.IsPublic == true || x.PlanCreatedBy == userId).ToListAsync();
         }
 
-        public async Task<Plan?> UpdatePlan(Guid id, string? name, string? description, bool? isPublic)
+        public async Task<Plan?> UpdatePlan(Guid id,string userId, string? name, string? description, bool? isPublic)
         {
             var plan = _context.Plans.Find(id);
-            if (plan == null)
+            if (plan == null || plan.PlanCreatedBy != userId)
             {
                 return await Task.FromResult<Plan?>(null);
             }

@@ -34,9 +34,9 @@ namespace EnduraGenius.API.Repositories.PlanWorkoutsRepositories
             }
         }
 
-        public async Task<bool> DeletePlanWorkout(Guid id)
+        public async Task<bool> DeletePlanWorkout(Guid id, string userId)
         {
-            var workoutplan = await _dbcontext.PlanWorkouts.FindAsync(id);
+            var workoutplan = await _dbcontext.PlanWorkouts.Include(x => x.Plan).Where(x => x.Id == id && x.Plan.PlanCreatedBy == userId).FirstOrDefaultAsync();
             if (workoutplan == null)
             {
                 return false;
@@ -46,7 +46,7 @@ namespace EnduraGenius.API.Repositories.PlanWorkoutsRepositories
             return true;
         }
 
-        public async Task<List<PlanWorkout>> GetPlanWorkoutByPlanId(Guid id)
+        public async Task<List<PlanWorkout>> GetPlanWorkoutByPlanId(Guid id, string userId)
         {
             return await _dbcontext.PlanWorkouts.
                 Include(x=> x.Workout)
@@ -54,22 +54,25 @@ namespace EnduraGenius.API.Repositories.PlanWorkoutsRepositories
                 .Include(x => x.Workout.SecondaryMuscle)
                 .Include(x=>x.Plan)
                 .Where(x => x.PlanId == id)
+                .Where(x => x.Plan.PlanCreatedBy == userId || x.Plan.IsPublic == true)
                 .OrderBy(x => x.DayNumber)
                 .ToListAsync();
         }
 
-        public async Task<PlanWorkout?> GetPlanWorkoutById(Guid id)
+        public async Task<PlanWorkout?> GetPlanWorkoutById(Guid id , string userId)
         {
             return await _dbcontext.PlanWorkouts.Include(x => x.Workout)
                 .Include(x => x.Workout.MainMuscle)
                 .Include(x => x.Workout.SecondaryMuscle)
                 .Include(x => x.Plan)
-                .Where(x => x.Id == id).FirstOrDefaultAsync();
+                .Where(x => x.Id == id)
+                .Where(x => x.Plan.PlanCreatedBy == userId || x.Plan.IsPublic == true)
+                .FirstOrDefaultAsync();
         }
 
-        public async Task<PlanWorkout?> UpdatePlanWorkout(Guid id, Guid? NewWorkoutId, string? Reps, int? dayNumber, int? Order)
+        public async Task<PlanWorkout?> UpdatePlanWorkout(Guid id,string userId, Guid? NewWorkoutId, string? Reps, int? dayNumber, int? Order)
         {
-            var workoutplan = await _dbcontext.PlanWorkouts.FindAsync(id);
+            var workoutplan = await _dbcontext.PlanWorkouts.Include(x => x.Plan).Where(x => x.Id == id && x.Plan.PlanCreatedBy == userId).FirstOrDefaultAsync();
             if (workoutplan == null)
             {
                 return null;
