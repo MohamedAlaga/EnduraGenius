@@ -5,11 +5,13 @@ using EnduraGenius.API.Models.DTO;
 using EnduraGenius.API.Models.Domain;
 using Microsoft.AspNetCore.Http.HttpResults;
 using EnduraGenius.API.Repositories.MuscleRepositories;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EnduraGenius.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "admin")]
     public class MusclesController : ControllerBase
     {
         private readonly IMuscleRepository _muscleRepository;

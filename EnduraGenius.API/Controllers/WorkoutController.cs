@@ -7,12 +7,15 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
 using EnduraGenius.API.Repositories.MuscleRepositories;
 using EnduraGenius.API.Repositories.WorkoutsRepositories;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 
 namespace EnduraGenius.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "admin")]
     public class WorkoutController : ControllerBase
     {
         private readonly EnduraGeniusDBContext _dbcontext;
@@ -58,6 +61,11 @@ namespace EnduraGenius.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateWorkout([FromBody] CreateWorkoutRequestDTO createWorkoutRequestDTO)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
             var mainMuscle = await _muscleRepository.GetMuscleByName(createWorkoutRequestDTO.MainMuscleName);
             if (mainMuscle == null)
             {
@@ -70,7 +78,7 @@ namespace EnduraGenius.API.Controllers
             }
             var workout = _mapper.Map<Workout>(createWorkoutRequestDTO);
             workout.IsCertified = false;
-            workout = await _workoutsRepository.CreateWorkout(workout, mainMuscle, secondaryMuscle, "a4059c44-8a45-4200-bfa8-bd618696d3ea");
+            workout = await _workoutsRepository.CreateWorkout(workout, mainMuscle, secondaryMuscle, userId);
             if (workout == null)
             {
                 return BadRequest();

@@ -7,11 +7,14 @@ using EnduraGenius.API.Repositories.PlanRepositories;
 using EnduraGenius.API.Models.DTO;
 using EnduraGenius.API.Repositories.PlanWorkoutsRepositories;
 using System.Numerics;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace EnduraGenius.API.Controllers
 {
     [Route("api/Plans/User/")]
     [ApiController]
+    [Authorize]
     public class UserPlansController : ControllerBase
     {
         private readonly IPlansUsersRepository _plansUsersRepository;
@@ -28,7 +31,11 @@ namespace EnduraGenius.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUserPlans()
         {
-            var userid = "a4059c44-8a45-4200-bfa8-bd618696d3ea";
+            var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userid == null)
+            {
+                return Unauthorized();
+            }
             var userPlans = await _plansUsersRepository.GetPlansUserByUserId(userid);
             var AllPlans = new List<Plan>();
             foreach (var userPlan in userPlans)
@@ -53,7 +60,11 @@ namespace EnduraGenius.API.Controllers
         [Route("Current")]
         public async Task<IActionResult> GetCurrentPlan()
         {
-            var userid = "a4059c44-8a45-4200-bfa8-bd618696d3ea";
+            var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userid == null)
+            {
+                return Unauthorized();
+            }
             var userCurrentPlan = await _plansUsersRepository.GetUserCurrentPlan(userid);
             if (userCurrentPlan == null)
             {
@@ -73,7 +84,11 @@ namespace EnduraGenius.API.Controllers
         [Route("Current/{PlanId:Guid}")]
         public async Task<IActionResult> SetCurrentPlan([FromRoute] Guid PlanId)
         {
-            var userid = "a4059c44-8a45-4200-bfa8-bd618696d3ea";
+            var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userid == null)
+            {
+                return Unauthorized();
+            }
             var userCurrentPlan = await _plansUsersRepository.SetCurrentPlan(PlanId, userid);
             if (userCurrentPlan == null)
             {

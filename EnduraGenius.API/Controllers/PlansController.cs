@@ -9,10 +9,13 @@ using EnduraGenius.API.Models.DTO;
 using EnduraGenius.API.Repositories.UserWorkoutRepositories;
 using EnduraGenius.API.Repositories.WorkoutsRepositories;
 using EnduraGenius.API.Repositories.PlansUsersRepositories;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 namespace EnduraGenius.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PlansController : ControllerBase
     {
         private readonly IPlanRepository _plansRepository;
@@ -68,7 +71,11 @@ namespace EnduraGenius.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePlan([FromBody] CreatePlanRequestDTO plan)
         {
-            var CurrentUserId = "a4059c44-8a45-4200-bfa8-bd618696d3ea";
+            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (CurrentUserId == null)
+            {
+                return Unauthorized();
+            }
             var newplan = await _plansRepository.CreatePlan(plan.Name,plan.Descreption, CurrentUserId, false);
             if (newplan == null)
             {

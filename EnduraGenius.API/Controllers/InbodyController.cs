@@ -1,7 +1,9 @@
-﻿using AutoMapper;
+﻿using System.Security.Claims;
+using AutoMapper;
 using EnduraGenius.API.Models.Domain;
 using EnduraGenius.API.Models.DTO;
 using EnduraGenius.API.Repositories.InbodyRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +11,7 @@ namespace EnduraGenius.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class InbodyController : ControllerBase
     {
         private readonly IInbodyRepository _inbodyRepository;
@@ -21,7 +24,12 @@ namespace EnduraGenius.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetInbody()
         {
-           var inbody = await this._inbodyRepository.GetInbodyByUserId("a4059c44-8a45-4200-bfa8-bd618696d3ea");
+           var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            var inbody = await this._inbodyRepository.GetInbodyByUserId(userId);
            var inbodyDTO = _mapper.Map<List<InbodyResponseDTO>>(inbody);
            return Ok(inbodyDTO);
         }
@@ -29,7 +37,11 @@ namespace EnduraGenius.API.Controllers
         [HttpPost]
         public async Task<IActionResult> PostInbody([FromBody] RequestInbodyDTO requestInbodyDTO)
         {
-            string userId = "a4059c44-8a45-4200-bfa8-bd618696d3ea"; 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
             var inbody = await _inbodyRepository.InsertInbodyAsync(userId, requestInbodyDTO.ActivityLevel, requestInbodyDTO.name);
             if (inbody == null)
             {
@@ -43,7 +55,12 @@ namespace EnduraGenius.API.Controllers
         [Route("{id}")]
         public async Task<IActionResult> GetInbodyById([FromRoute]Guid id)
         {
-            var inbody = await this._inbodyRepository.GetInbodyAsync(id,"a4059c44-8a45-4200-bfa8-bd618696d3ea");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            var inbody = await this._inbodyRepository.GetInbodyAsync(id,userId);
             if (inbody == null)
             {
                 return NotFound();
@@ -55,7 +72,12 @@ namespace EnduraGenius.API.Controllers
         [Route("{id}")]
         public async Task<IActionResult> DeleteInbody(Guid id)
         {
-            var result = await this._inbodyRepository.DeleteInbody(id, "a4059c44-8a45-4200-bfa8-bd618696d3ea");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            var result = await this._inbodyRepository.DeleteInbody(id,userId);
             if (result)
             {
                 return Ok();

@@ -1,4 +1,5 @@
-﻿using EnduraGenius.API.Models.Domain;
+﻿using System.Security.Claims;
+using EnduraGenius.API.Models.Domain;
 using EnduraGenius.API.Models.DTO;
 using EnduraGenius.API.Repositories.TokenRepositories;
 using Microsoft.AspNetCore.Http;
@@ -70,6 +71,20 @@ namespace EnduraGenius.API.Controllers
                 }
             }
             return BadRequest("invalid login data");
+        }
+
+        [HttpGet]
+        [Route("test")]
+        // get cuurent user data from jwt auth token
+        public IActionResult Test()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User ID is not found in the token.");
+            }
+                Console.WriteLine("\n\n\nthe user id is : " + userId);
+            return Ok(userId);
         }
     }
 }

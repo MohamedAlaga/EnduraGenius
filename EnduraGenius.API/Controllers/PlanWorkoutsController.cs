@@ -4,6 +4,7 @@ using EnduraGenius.API.Models.DTO;
 using EnduraGenius.API.Repositories.PlanRepositories;
 using EnduraGenius.API.Repositories.PlanWorkoutsRepositories;
 using EnduraGenius.API.Repositories.WorkoutsRepositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,7 @@ namespace EnduraGenius.API.Controllers
 {
     [Route("api/Plan/Workouts")]
     [ApiController]
+    [Authorize]
     public class PlanWorkoutsController : ControllerBase
     {
         private readonly IPlanWorkoutsRepository _planWorkoutsRepository;

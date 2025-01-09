@@ -6,11 +6,14 @@ using EnduraGenius.API.Repositories.WorkoutsRepositories;
 using EnduraGenius.API.Repositories.PlansUsersRepositories;
 using EnduraGenius.API.Repositories.PlanWorkoutsRepositories;
 using EnduraGenius.API.Models.DTO;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EnduraGenius.API.Controllers
 {
     [Route("api/User/Workouts")]
     [ApiController]
+    [Authorize]
     public class UserWorkoutsController : ControllerBase
     {
         private readonly IUserWorkoutRepository _userWorkoutRepository;
@@ -29,7 +32,11 @@ namespace EnduraGenius.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUserWorkouts([FromQuery] string? filterOn, [FromQuery] string? filterQuery, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
         {
-            var userid = "a4059c44-8a45-4200-bfa8-bd618696d3ea";
+            var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userid == null)
+            {
+                return Unauthorized();
+            }
             var userWorkouts = await _userWorkoutRepository.GetUserWorkoutByUserId(userid,filterOn,filterQuery,pageNumber,pageSize);
             var workoutsDto = _mapper.Map<List<UserWorkoutResponseDTO>>(userWorkouts);
             return Ok(workoutsDto);
@@ -38,7 +45,11 @@ namespace EnduraGenius.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> UpdateUserWorkout([FromRoute] Guid id, [FromBody] UpdateUserWorkoutRequestDTO updateUserWorkoutRequestDTO)
         {
-            var userId = "a4059c44-8a45-4200-bfa8-bd618696d3ea";
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
             var userWorkout = await _userWorkoutRepository.GetUserWorkoutByWorkoutId(userId,id);
             if (userWorkout == null)
             {
