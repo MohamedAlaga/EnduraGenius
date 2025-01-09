@@ -97,5 +97,28 @@ namespace EnduraGenius.API.Controllers
             return CreatedAtAction(nameof(GetPlanById), new { id = newplan.Id },planDto);
         }
 
+
+        // PUT: api/Plans/{id}
+        // update a plan
+        [HttpPut]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> UpdatePlan([FromRoute] Guid id, [FromBody] UpdatePlanRequestDTO plan)
+        {
+            var planToUpdate = await _plansRepository.GetPlanById(id);
+            if (planToUpdate == null)
+            {
+                return NotFound();
+            }
+            var updatedPlan = await _plansRepository.UpdatePlan(id, plan.PlanName, plan.PlanDescription, plan.IsPublic);
+            if (updatedPlan == null)
+            {
+                return BadRequest();
+            }
+            var PlansWorkouts = await _planWorkoutsRepository.GetPlanWorkoutByPlanId(updatedPlan.Id);
+            var planDto = _mapper.Map<PlanResponseDTO>(updatedPlan);
+            planDto.workouts = _mapper.Map<List<PlanWorkoutsResponseDTO>>(PlansWorkouts);
+            return Ok(planDto);
+        }
+
     }
 }
