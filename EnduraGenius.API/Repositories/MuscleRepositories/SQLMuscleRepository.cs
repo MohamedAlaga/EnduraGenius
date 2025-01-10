@@ -29,22 +29,28 @@ namespace EnduraGenius.API.Repositories
 
         public async Task<bool> DeleteMuscle(Guid MuscleId)
         {
-
-            try
-            {
                 var muscle = await _dbcontext.Muscles.FindAsync(MuscleId);
                 if (muscle == null)
                 {
                     return false;
                 }
+                var WorkoutsWithMainMuscle = await _dbcontext.Workouts.Where(x => x.MainMuscleId == muscle.Id).ToListAsync();
+                foreach (var workout in WorkoutsWithMainMuscle)
+                {
+                    workout.MainMuscleId = null;
+                    _dbcontext.Update(workout);
+            }
+                await _dbcontext.SaveChangesAsync();
+                var WorkoutsWithSecondMuscle = await  _dbcontext.Workouts.Where(x => x.SecondaryMuscleId == muscle.Id).ToListAsync();
+                foreach (var workout in WorkoutsWithSecondMuscle)
+                {
+                    workout.SecondaryMuscleId = null;
+                    _dbcontext.Update(workout);
+            }
+                await _dbcontext.SaveChangesAsync();
                 _dbcontext.Muscles.Remove(muscle);
                 await _dbcontext.SaveChangesAsync();
                 return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
         }
 
         public async Task<Muscle?> GetMuscleById(Guid id)

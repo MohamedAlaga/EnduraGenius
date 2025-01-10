@@ -47,22 +47,13 @@ namespace EnduraGenius.API.Data
                 .HasOne(p => p.planCreator)
                 .WithMany()
                 .HasForeignKey(p => p.PlanCreatedBy)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.SetNull);
+
             builder.Entity<Workout>()
                 .HasOne(w => w.WorkoutCreator)
                 .WithMany()
                 .HasForeignKey(w => w.WorkoutCreatedBy)
-                .OnDelete(DeleteBehavior.Restrict);
-            builder.Entity<Workout>()
-                .HasOne(w => w.MainMuscle)
-                .WithMany()
-                .HasForeignKey(w => w.MainMuscleId)
-                .OnDelete(DeleteBehavior.Restrict);
-            builder.Entity<Workout>()
-                .HasOne(w => w.SecondaryMuscle)
-                .WithMany()
-                .HasForeignKey(w => w.SecondaryMuscleId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<IdentityRole>().HasData(roles);
         }

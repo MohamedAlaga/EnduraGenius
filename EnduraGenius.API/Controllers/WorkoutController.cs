@@ -57,7 +57,7 @@ namespace EnduraGenius.API.Controllers
         // Create a new workout
         // done
         [HttpPost]
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateWorkout([FromBody] CreateWorkoutRequestDTO createWorkoutRequestDTO)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -91,7 +91,7 @@ namespace EnduraGenius.API.Controllers
         // done
         [HttpPut]
         [Route("{id:Guid}")]
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateWorkout([FromRoute] Guid id, [FromBody] GetWorkoutDto updateWorkoutDto)
         {
             var workout = await _workoutsRepository.GetWorkoutById(id);
@@ -112,7 +112,7 @@ namespace EnduraGenius.API.Controllers
         // done
         [HttpDelete]
         [Route("{id:Guid}")]
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteWorkout([FromRoute] Guid id)
         {
             var workout = await _workoutsRepository.DeleteWorkout(id);
@@ -127,7 +127,7 @@ namespace EnduraGenius.API.Controllers
         // done
         [HttpGet]
         [Route("uncertified")]
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         public async Task<IActionResult> GetUncertifiedWorkouts([FromQuery] string? filterOn, [FromQuery] string? filterQuery, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
         {
             var workouts = await _workoutsRepository.GetWorkouts(filterOn, filterQuery, pageNumber, pageSize, false);
@@ -139,7 +139,7 @@ namespace EnduraGenius.API.Controllers
         // done
         [HttpPut]
         [Route("certify/{id:Guid}")]
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         public async Task<IActionResult> ChangeCertificationStatus([FromRoute] Guid id)
         {
             var workout = await _workoutsRepository.ChangeCertificationStatus(id);

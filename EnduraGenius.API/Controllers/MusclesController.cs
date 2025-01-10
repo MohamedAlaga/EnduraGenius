@@ -11,7 +11,7 @@ namespace EnduraGenius.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "User")]
     public class MusclesController : ControllerBase
     {
         private readonly IMuscleRepository _muscleRepository;

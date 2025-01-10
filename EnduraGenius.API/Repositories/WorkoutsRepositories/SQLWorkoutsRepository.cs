@@ -4,6 +4,7 @@ using EnduraGenius.API.Models.DTO;
 using EnduraGenius.API.Repositories.WorkoutsRepositories;
 using Microsoft.EntityFrameworkCore;
 
+//bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJhZGVsQGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiIyOWIwOTc1Yy1iMzJmLTQ4NDItOTg4YS1lMDM4ZjA0NzBmZGUiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNzM2NDkwMDY1LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDYzLyIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjcwNjMvIn0.FtOapRoMLBV8gSek-LiOy0t6K0ndNlUNtjbbCoa_b00
 namespace EnduraGenius.API.Repositories
 {
     public class SQLWorkoutsRepository : IWorkoutsRepository
@@ -33,6 +34,18 @@ namespace EnduraGenius.API.Repositories
             if (workout == null)
             {
                 return false;
+            }
+            var workoutPlans = await _dbcontext.PlanWorkouts.Where(x => x.WorkoutId == id).ToListAsync();
+            foreach (var planWorkout in workoutPlans)
+            {
+                _dbcontext.PlanWorkouts.Remove(planWorkout);
+                _dbcontext.SaveChanges();
+            }
+            var userWorkouts = await _dbcontext.UserWorkouts.Where(x => x.WorkoutId == id).ToListAsync();
+            foreach (var userWorkout in userWorkouts)
+            {
+                _dbcontext.UserWorkouts.Remove(userWorkout);
+                _dbcontext.SaveChanges();
             }
             _dbcontext.Workouts.Remove(workout);
             await _dbcontext.SaveChangesAsync();
