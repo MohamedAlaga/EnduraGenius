@@ -4,7 +4,7 @@ using EnduraGenius.API.Models.DTO;
 using EnduraGenius.API.Repositories.WorkoutsRepositories;
 using Microsoft.EntityFrameworkCore;
 
-//bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJhZGVsQGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiIyOWIwOTc1Yy1iMzJmLTQ4NDItOTg4YS1lMDM4ZjA0NzBmZGUiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNzM2NDkwMDY1LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDYzLyIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjcwNjMvIn0.FtOapRoMLBV8gSek-LiOy0t6K0ndNlUNtjbbCoa_b00
+//bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJhZGVsQGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiIyOWIwOTc1Yy1iMzJmLTQ4NDItOTg4YS1lMDM4ZjA0NzBmZGUiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNzM2NDk3NjE5LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDYzLyIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjcwNjMvIn0.s4IXDuvP_6tRlNVz7_cm6BZURqcfJK0nDo0lLZ5iOnE
 namespace EnduraGenius.API.Repositories
 {
     public class SQLWorkoutsRepository : IWorkoutsRepository
@@ -21,7 +21,7 @@ namespace EnduraGenius.API.Repositories
             workout.WorkoutCreatedBy = UserID;
             workout.CreatedAt = DateTime.Now;
             workout.UpdatedAt = DateTime.Now;
-            workout.IsCertified = false;
+            workout.IsCertified = true;
 
             await _dbcontext.Workouts.AddAsync(workout);
             await _dbcontext.SaveChangesAsync();
