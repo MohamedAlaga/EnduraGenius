@@ -43,7 +43,8 @@ namespace EnduraGenius.API.Data
                     NormalizedName = "User".ToUpper()
                 },
             };
-            List<Muscle> muscles = new List<Muscle>() {new Muscle { Id = Guid.Parse("df475ba8-6be7-42b6-871f-6a29cd4c91d8"), Name = "Deltoid (shoulder-Top)", Description = "Shoulder muscle composed of three heads: anterior, lateral, and posterior." },
+            List<Muscle> muscles = new List<Muscle>() {
+            new Muscle { Id = Guid.Parse("df475ba8-6be7-42b6-871f-6a29cd4c91d8"), Name = "Deltoid (shoulder-Top)", Description = "Shoulder muscle composed of three heads: anterior, lateral, and posterior." },
             new Muscle { Id = Guid.Parse("d729e9f8-3384-4873-83bc-74acdccacabe"), Name = "Anterior Deltoid (shoulder-Front)", Description = "The front portion of the deltoid muscle." },
             new Muscle { Id = Guid.Parse("c4ac8999-40a4-40c8-9518-42be7e2d0744"), Name = "Posterior Deltoid (shoulder-Back)", Description = "The back portion of the deltoid muscle." },
             new Muscle { Id = Guid.Parse("8909c9d4-2f45-4a2f-90c8-d6f475820a2f"), Name = "Clavicular Head (Upper Chest)", Description = "Upper part of the pectoralis major muscle." },

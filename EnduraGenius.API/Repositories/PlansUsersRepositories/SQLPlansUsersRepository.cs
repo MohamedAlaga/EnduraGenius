@@ -1,5 +1,6 @@
 ﻿using EnduraGenius.API.Data;
 using EnduraGenius.API.Models.Domain;
+using EnduraGenius.API.Repositories.PlanRepositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace EnduraGenius.API.Repositories.PlansUsersRepositories
@@ -7,9 +8,11 @@ namespace EnduraGenius.API.Repositories.PlansUsersRepositories
     public class SQLPlansUsersRepository : IPlansUsersRepository
     {
         private readonly EnduraGeniusDBContext _dbContext;
-        public SQLPlansUsersRepository(EnduraGeniusDBContext dBContext)
+        private readonly IPlanRepository _planRepository;
+        public SQLPlansUsersRepository(EnduraGeniusDBContext dBContext, IPlanRepository planRepository)
         {
             _dbContext = dBContext;
+            _planRepository = planRepository;
         }
         public async Task<PlansUsers?> CreatePlanUser(Plan plan, string userId)
         {
@@ -87,5 +90,31 @@ namespace EnduraGenius.API.Repositories.PlansUsersRepositories
             return newCurrentUserPlan;
         }
 
+        public async Task<bool> UnsubscibeUserFromPlan(string userId, Guid planId)
+        {
+            var CurrentPlan = await this._planRepository.GetPlanById(planId, userId);
+            if (CurrentPlan == null)
+            {
+                return false;
+            }
+            if (CurrentPlan.IsPublic == false)
+            {
+                await this._planRepository.DeletePlan(planId, userId);
+                return true;
+            }
+            var planUser = await _dbContext.PlansUsers
+                .Where(x => x.UserId == userId && x.PlanId == planId)
+                .ToListAsync();
+            if (planUser == null)
+            {
+                return false;
+            }
+            foreach (var item in planUser)
+            {
+                _dbContext.PlansUsers.Remove(item);
+            }
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
     }
 }

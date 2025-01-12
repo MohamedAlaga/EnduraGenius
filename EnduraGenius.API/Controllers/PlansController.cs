@@ -131,7 +131,7 @@ namespace EnduraGenius.API.Controllers
             {
                 return NotFound();
             }
-            var updatedPlan = await _plansRepository.UpdatePlan(id,CurrentUserId, plan.PlanName, plan.PlanDescription, plan.IsPublic);
+            var updatedPlan = await _plansRepository.UpdatePlan(id,CurrentUserId, plan.PlanName, plan.PlanDescription, plan.IsPublic,plan.workoutsDtos);
             if (updatedPlan == null)
             {
                 return BadRequest();
@@ -142,5 +142,31 @@ namespace EnduraGenius.API.Controllers
             return Ok(planDto);
         }
 
+        [HttpGet]
+        [Route("custom/prosplit")]
+        public async Task<IActionResult> GetCustomProsplit()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            var workouts = await _plansRepository.CreateProSplitWokoutPlan(userId);
+            return Ok(workouts);
+        }
+
+
+        [HttpGet]
+        [Route("custom/UpperLower")]
+        public async Task<IActionResult> GetCustomUpperLower()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            var workouts = await _plansRepository.CreateUpperLowerPlan(userId);
+            return Ok(workouts);
+        }
     }
 }

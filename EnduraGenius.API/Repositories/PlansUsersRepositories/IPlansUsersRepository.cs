@@ -10,5 +10,6 @@ namespace EnduraGenius.API.Repositories.PlansUsersRepositories
         Task<PlansUsers?> GetPlanUserById(Guid id);
         Task<PlansUsers?> GetUserCurrentPlan(string id);
         Task<PlansUsers?> SetCurrentPlan(Guid planId, string userId);
+        Task<bool> UnsubscibeUserFromPlan(string userId, Guid planId);
     }
 }

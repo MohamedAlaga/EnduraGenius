@@ -3,6 +3,7 @@ using EnduraGenius.API.Models.Domain;
 using EnduraGenius.API.Models.DTO;
 using EnduraGenius.API.Repositories.EmailSenderRepository;
 using EnduraGenius.API.Repositories.TokenRepositories;
+using EnduraGenius.API.Repositories.WorkoutsRepositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -142,8 +143,12 @@ namespace EnduraGenius.API.Controllers
         // test email sender
         public async Task<IActionResult> Test()
         {
-            await _emailSender.SendEmailAsync("2c95c36ba0@emailawb.pro", "test","this email to test email sender");
-            return Ok();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            return Ok(userId);
         }
     }
 }

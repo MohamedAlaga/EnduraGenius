@@ -101,5 +101,22 @@ namespace EnduraGenius.API.Controllers
             }
             return Ok();
         }
+
+        [HttpDelete]
+        [Route("Unsubscribe/{PlanId:Guid}")]
+        public async Task<IActionResult> UnsubscribeFromPlan([FromRoute] Guid PlanId)
+        {
+            var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userid == null)
+            {
+                return Unauthorized();
+            }
+            var result = await _plansUsersRepository.UnsubscibeUserFromPlan(userid, PlanId);
+            if (result)
+            {
+                return Ok();
+            }
+            return NotFound();
+        }
     }
 }
