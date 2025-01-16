@@ -4,6 +4,7 @@ using EnduraGenius.API.Mappings;
 using EnduraGenius.API.Middlewares;
 using EnduraGenius.API.Models.Domain;
 using EnduraGenius.API.Repositories;
+using EnduraGenius.API.Repositories.AuthRepository;
 using EnduraGenius.API.Repositories.EmailSenderRepository;
 using EnduraGenius.API.Repositories.InbodyRepository;
 using EnduraGenius.API.Repositories.MuscleRepositories;
@@ -71,6 +72,7 @@ builder.Services.AddDbContext<EnduraGeniusDBContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("mysql")));
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IWorkoutsRepository, SQLWorkoutsRepository>();
 builder.Services.AddScoped<IMuscleRepository, SQLMuscleRepository>();

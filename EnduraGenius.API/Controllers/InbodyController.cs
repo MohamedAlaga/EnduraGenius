@@ -1,10 +1,8 @@
-﻿using System.Security.Claims;
-using AutoMapper;
-using EnduraGenius.API.Models.Domain;
+﻿using AutoMapper;
 using EnduraGenius.API.Models.DTO;
+using EnduraGenius.API.Repositories.AuthRepository;
 using EnduraGenius.API.Repositories.InbodyRepository;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EnduraGenius.API.Controllers
@@ -15,16 +13,18 @@ namespace EnduraGenius.API.Controllers
     public class InbodyController : ControllerBase
     {
         private readonly IInbodyRepository _inbodyRepository;
-        private readonly IMapper _mapper; 
-        public InbodyController(IMapper mapper, IInbodyRepository inbodyRepository)
+        private readonly IMapper _mapper;
+        private readonly IAuthRepository _authRepository;
+        public InbodyController(IMapper mapper, IInbodyRepository inbodyRepository, IAuthRepository authRepository)
         {
             this._inbodyRepository = inbodyRepository;
             this._mapper = mapper;
+            this._authRepository = authRepository;
         }
         [HttpGet]
         public async Task<IActionResult> GetInbody()
         {
-           var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+           var userId = _authRepository.GetCurrentUserId();
             if (userId == null)
             {
                 return Unauthorized();
@@ -37,7 +37,7 @@ namespace EnduraGenius.API.Controllers
         [HttpPost]
         public async Task<IActionResult> PostInbody([FromBody] RequestInbodyDTO requestInbodyDTO)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = _authRepository.GetCurrentUserId();
             if (userId == null)
             {
                 return Unauthorized();
@@ -55,7 +55,7 @@ namespace EnduraGenius.API.Controllers
         [Route("{id}")]
         public async Task<IActionResult> GetInbodyById([FromRoute]Guid id)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = _authRepository.GetCurrentUserId();
             if (userId == null)
             {
                 return Unauthorized();
@@ -72,7 +72,7 @@ namespace EnduraGenius.API.Controllers
         [Route("{id}")]
         public async Task<IActionResult> DeleteInbody(Guid id)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = _authRepository.GetCurrentUserId();
             if (userId == null)
             {
                 return Unauthorized();
