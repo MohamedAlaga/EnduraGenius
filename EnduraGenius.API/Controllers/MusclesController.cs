@@ -33,6 +33,10 @@ namespace EnduraGenius.API.Controllers
         public async Task<IActionResult> GetMuscleById([FromRoute] Guid id)
         {
             var muscle = await _muscleRepository.GetMuscleById(id);
+            if (muscle == null)
+            {
+                return NotFound();
+            }
             return Ok(muscle);
         }
 
