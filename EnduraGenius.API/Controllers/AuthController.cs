@@ -138,17 +138,11 @@ namespace EnduraGenius.API.Controllers
             return BadRequest("bad Request");
         }
 
-        [HttpGet]
-        [Route("test")]
-        // test email sender
-        public async Task<IActionResult> Test()
+        [HttpPost]
+        [Route("TestErrorLogger")]
+        public Task<IActionResult> TestErrorLogger()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
-            {
-                return Unauthorized();
-            }
-            return Ok(userId);
+            throw new Exception("this is a new exception to test");
         }
     }
 }
