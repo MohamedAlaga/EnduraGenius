@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using AutoMapper;
 using EnduraGenius.API.Models.DTO;
+using EnduraGenius.API.Repositories.AuthRepository;
 using EnduraGenius.API.Repositories.UserRepository;
 using EnduraGenius.API.Repositories.UserWorkoutRepositories;
 using Microsoft.AspNetCore.Authorization;
@@ -17,17 +18,19 @@ namespace EnduraGenius.API.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IUserWorkoutRepository _userWorkoutRepository;
         private readonly IMapper _mapper;
-        public UserController(IUserRepository userRepository, IMapper mapper , IUserWorkoutRepository userWorkoutRepository)
+        private readonly IAuthRepository _authRepository;
+        public UserController(IUserRepository userRepository, IMapper mapper , IUserWorkoutRepository userWorkoutRepository, IAuthRepository authRepository)
         {
             this._mapper = mapper;
             this._userRepository = userRepository;
             this._userWorkoutRepository = userWorkoutRepository;
+            this._authRepository = authRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetUser([FromQuery] string? WorkoutsFilterOn, [FromQuery] string? WorkoutsFilterQuery, [FromQuery] int WorkoutsPageNumber = 1, [FromQuery] int WorkoutsPageSize = 20)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = _authRepository.GetCurrentUserId();
             if (userId == null)
             {
                 return Unauthorized();
@@ -47,7 +50,7 @@ namespace EnduraGenius.API.Controllers
         [Route("Points")]
         public async Task<IActionResult> UpdateUserPoints([FromBody] EditPointsDTO newPoints )
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = _authRepository.GetCurrentUserId();
             if (userId == null)
             {
                 return Unauthorized();
@@ -65,7 +68,7 @@ namespace EnduraGenius.API.Controllers
         [Route("Points/Add")]
         public async Task<IActionResult> AddUserPoints([FromBody] EditPointsDTO AddPoints)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = _authRepository.GetCurrentUserId();
             if (userId == null)
             {
                 return Unauthorized();
@@ -83,7 +86,7 @@ namespace EnduraGenius.API.Controllers
         [Route("body")]
         public async Task<IActionResult> updateUserBody([FromBody] UpdateUserBodyDTO updateUserBodyDTO)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = _authRepository.GetCurrentUserId();
             if (userId == null)
             {
                 return Unauthorized();
