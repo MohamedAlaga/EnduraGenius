@@ -109,14 +109,13 @@ namespace EnduraGenius.API.Tests.Controller
             result.Should().BeOfType<UnauthorizedResult>();
         }
 
+        [Fact]
         public async Task UnsubscribeFromPlan_ShouldReturnOkResult_whenUserLoggedinAndPlanFound()
         {
             // Arrange
             var controller = new UserPlansController(_plansUsersRepository, _mapper, _planRepository, _planWorkoutsRepository, _authRepository);
             A.CallTo(() => _authRepository.GetCurrentUserId()).Returns(Guid.NewGuid().ToString());
-            A.CallTo(() => _plansUsersRepository.GetPlansUserByUserId(A<string>._)).Returns(new List<PlansUsers>());
-            A.CallTo(() => _planRepository.GetPlanById(A<Guid>._, A<string>._)).Returns(new Plan());
-            A.CallTo(() => _planWorkoutsRepository.GetPlanWorkoutByPlanId(A<Guid>._, A<string>._)).Returns(new List<PlanWorkout>());
+            A.CallTo(() => _plansUsersRepository.UnsubscibeUserFromPlan(A<string>._, A<Guid>._)).Returns(true);
             // Act
             var result = await controller.UnsubscribeFromPlan(Guid.NewGuid());
             // Assert
