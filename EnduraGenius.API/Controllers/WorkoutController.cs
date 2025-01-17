@@ -9,6 +9,7 @@ using EnduraGenius.API.Repositories.MuscleRepositories;
 using EnduraGenius.API.Repositories.WorkoutsRepositories;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using EnduraGenius.API.Repositories.AuthRepository;
 namespace EnduraGenius.API.Controllers
 {
     [Route("api/[controller]")]
@@ -16,16 +17,16 @@ namespace EnduraGenius.API.Controllers
     [Authorize]
     public class WorkoutController : ControllerBase
     {
-        private readonly EnduraGeniusDBContext _dbcontext;
         private readonly IWorkoutsRepository _workoutsRepository;
         private readonly IMapper _mapper;
         private readonly IMuscleRepository _muscleRepository;
-        public WorkoutController(EnduraGeniusDBContext dbcontext, IWorkoutsRepository workoutsRepository, IMapper mapper, IMuscleRepository muscleRepository)
+        private readonly IAuthRepository _authRepository;
+        public WorkoutController(IWorkoutsRepository workoutsRepository, IMapper mapper, IMuscleRepository muscleRepository, IAuthRepository authRepository)
         {
-            this._dbcontext = dbcontext;
             this._workoutsRepository = workoutsRepository;
             this._mapper = mapper;
             this._muscleRepository = muscleRepository;
+            this._authRepository = authRepository;
         }
 
         // GET: api/Workout/{id}
@@ -60,7 +61,7 @@ namespace EnduraGenius.API.Controllers
         //[Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateWorkout([FromBody] CreateWorkoutRequestDTO createWorkoutRequestDTO)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = _authRepository.GetCurrentUserId();
             if (userId == null)
             {
                 return Unauthorized();
