@@ -11,6 +11,7 @@ using EnduraGenius.API.Repositories.WorkoutsRepositories;
 using EnduraGenius.API.Repositories.PlansUsersRepositories;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using EnduraGenius.API.Repositories.AuthRepository;
 namespace EnduraGenius.API.Controllers
 {
     [Route("api/[controller]")]
@@ -24,7 +25,8 @@ namespace EnduraGenius.API.Controllers
         private readonly IPlansUsersRepository _plansUsersRepository;
         private readonly IUserWorkoutRepository _userWorkoutRepository;
         private readonly IWorkoutsRepository _workoutsRepository;
-        public PlansController( IPlanRepository plansRepository, IMapper mapper , IPlanWorkoutsRepository planWorkoutsRepository, IUserWorkoutRepository _userWorkoutRepository, IWorkoutsRepository workoutsRepository, IPlansUsersRepository plansUsersRepository)
+        private readonly IAuthRepository _authRepository;
+        public PlansController( IPlanRepository plansRepository, IMapper mapper , IPlanWorkoutsRepository planWorkoutsRepository, IUserWorkoutRepository _userWorkoutRepository, IWorkoutsRepository workoutsRepository, IPlansUsersRepository plansUsersRepository, IAuthRepository authRepository)
         {
             this._plansRepository = plansRepository;
             this._mapper = mapper;
@@ -32,13 +34,14 @@ namespace EnduraGenius.API.Controllers
             this._userWorkoutRepository = _userWorkoutRepository;
             this._workoutsRepository = workoutsRepository;
             this._plansUsersRepository = plansUsersRepository;
+            this._authRepository = authRepository;
         }
         // GET: api/Plans
         // get all plans from the database
         [HttpGet]
         public async Task<IActionResult> GetAllplans()
         {
-            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var CurrentUserId = _authRepository.GetCurrentUserId();
             if (CurrentUserId == null)
             {
                 return Unauthorized();
@@ -60,7 +63,7 @@ namespace EnduraGenius.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetPlanById([FromRoute] Guid id)
         {
-            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var CurrentUserId = _authRepository.GetCurrentUserId();
             if (CurrentUserId == null)
             {
                 return Unauthorized();
@@ -81,7 +84,7 @@ namespace EnduraGenius.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePlan([FromBody] CreatePlanRequestDTO plan)
         {
-            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var CurrentUserId = _authRepository.GetCurrentUserId();
             if (CurrentUserId == null)
             {
                 return Unauthorized();
@@ -121,7 +124,7 @@ namespace EnduraGenius.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> UpdatePlan([FromRoute] Guid id, [FromBody] UpdatePlanRequestDTO plan)
         {
-            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var CurrentUserId = _authRepository.GetCurrentUserId();
             if (CurrentUserId == null)
             {
                 return Unauthorized();
@@ -146,7 +149,7 @@ namespace EnduraGenius.API.Controllers
         [Route("custom/prosplit")]
         public async Task<IActionResult> GetCustomProsplit()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = _authRepository.GetCurrentUserId();
             if (userId == null)
             {
                 return Unauthorized();
@@ -160,7 +163,7 @@ namespace EnduraGenius.API.Controllers
         [Route("custom/UpperLower")]
         public async Task<IActionResult> GetCustomUpperLower()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = _authRepository.GetCurrentUserId();
             if (userId == null)
             {
                 return Unauthorized();
