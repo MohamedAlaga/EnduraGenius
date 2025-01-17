@@ -36,6 +36,7 @@ builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(
@@ -72,7 +73,6 @@ builder.Services.AddDbContext<EnduraGeniusDBContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("mysql")));
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
-builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IWorkoutsRepository, SQLWorkoutsRepository>();
 builder.Services.AddScoped<IMuscleRepository, SQLMuscleRepository>();
@@ -82,6 +82,7 @@ builder.Services.AddScoped<IPlanWorkoutsRepository, SQLPlanWorkoutRepository>();
 builder.Services.AddScoped<IUserWorkoutRepository,SQLUserWorkoutRepository>();
 builder.Services.AddScoped<IInbodyRepository,SQLInbodyRepository>();
 builder.Services.AddScoped<IUserRepository, SQLUserRepository>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
