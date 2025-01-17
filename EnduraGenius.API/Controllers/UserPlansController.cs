@@ -9,6 +9,7 @@ using EnduraGenius.API.Repositories.PlanWorkoutsRepositories;
 using System.Numerics;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using EnduraGenius.API.Repositories.AuthRepository;
 
 namespace EnduraGenius.API.Controllers
 {
@@ -21,27 +22,24 @@ namespace EnduraGenius.API.Controllers
         private readonly IPlanRepository _planRepository;
         private readonly IMapper _mapper;
         private readonly IPlanWorkoutsRepository _planWorkoutsRepository;
-        public UserPlansController(IPlansUsersRepository plansUsersRepository, IMapper mapper, IPlanRepository plan, IPlanWorkoutsRepository planWorkoutsRepository)
+        private readonly IAuthRepository _authRepository;
+        public UserPlansController(IPlansUsersRepository plansUsersRepository, IMapper mapper, IPlanRepository plan, IPlanWorkoutsRepository planWorkoutsRepository, IAuthRepository authRepository)
         {
             this._plansUsersRepository = plansUsersRepository;
             this._mapper = mapper;
             this._planRepository = plan;
             this._planWorkoutsRepository = planWorkoutsRepository;
+            this._authRepository = authRepository;
         }
         [HttpGet]
         public async Task<IActionResult> GetUserPlans()
         {
-            var CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var CurrentUserId = _authRepository.GetCurrentUserId();
             if (CurrentUserId == null)
             {
                 return Unauthorized();
             }
-            var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userid == null)
-            {
-                return Unauthorized();
-            }
-            var userPlans = await _plansUsersRepository.GetPlansUserByUserId(userid);
+            var userPlans = await _plansUsersRepository.GetPlansUserByUserId(CurrentUserId);
             var AllPlans = new List<Plan>();
             foreach (var userPlan in userPlans)
             {
@@ -65,7 +63,7 @@ namespace EnduraGenius.API.Controllers
         [Route("Current")]
         public async Task<IActionResult> GetCurrentPlan()
         {
-            var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userid = _authRepository.GetCurrentUserId();
             if (userid == null)
             {
                 return Unauthorized();
@@ -89,7 +87,7 @@ namespace EnduraGenius.API.Controllers
         [Route("Current/{PlanId:Guid}")]
         public async Task<IActionResult> SetCurrentPlan([FromRoute] Guid PlanId)
         {
-            var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userid = _authRepository.GetCurrentUserId();
             if (userid == null)
             {
                 return Unauthorized();
@@ -106,7 +104,7 @@ namespace EnduraGenius.API.Controllers
         [Route("Unsubscribe/{PlanId:Guid}")]
         public async Task<IActionResult> UnsubscribeFromPlan([FromRoute] Guid PlanId)
         {
-            var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userid = _authRepository.GetCurrentUserId();
             if (userid == null)
             {
                 return Unauthorized();

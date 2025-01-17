@@ -19,7 +19,6 @@ namespace EnduraGenius.API.Repositories.AuthRepository
                 return null;
             }
             return user.FindFirstValue(ClaimTypes.NameIdentifier);
-            
         }
 
         public string? GetCurrentUserRole()
