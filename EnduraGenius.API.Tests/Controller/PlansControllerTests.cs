@@ -13,7 +13,6 @@ using EnduraGenius.API.Repositories.PlansUsersRepositories;
 using EnduraGenius.API.Repositories.UserWorkoutRepositories;
 using EnduraGenius.API.Repositories.WorkoutsRepositories;
 using AutoMapper;
-using Xunit;
 using EnduraGenius.API.Models.Domain;
 
 namespace EnduraGenius.Tests.Controllers
