@@ -8,6 +8,7 @@ using EnduraGenius.API.Repositories.PlanWorkoutsRepositories;
 using EnduraGenius.API.Models.DTO;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using EnduraGenius.API.Repositories.AuthRepository;
 
 namespace EnduraGenius.API.Controllers
 {
@@ -17,22 +18,20 @@ namespace EnduraGenius.API.Controllers
     public class UserWorkoutsController : ControllerBase
     {
         private readonly IUserWorkoutRepository _userWorkoutRepository;
-        private readonly IWorkoutsRepository _workoutsRepository;
-        private readonly IPlansUsersRepository _plansUsersRepository;
-        private readonly IPlanWorkoutsRepository _planWorkoutsRepository;
         private readonly IMapper _mapper;
-        public UserWorkoutsController(IUserWorkoutRepository userWorkoutRepository, IWorkoutsRepository workoutsRepository, IPlansUsersRepository plansUsersRepository, IPlanWorkoutsRepository planWorkoutsRepository, IMapper mapper)
+        private readonly IAuthRepository _authRepository;
+       
+
+        public UserWorkoutsController(IUserWorkoutRepository userWorkoutRepository, IMapper mapper, IAuthRepository authRepository)
         {
             this._userWorkoutRepository = userWorkoutRepository;
-            this._workoutsRepository = workoutsRepository;
-            this._plansUsersRepository = plansUsersRepository;
-            this._planWorkoutsRepository = planWorkoutsRepository;
             this._mapper = mapper;
+            this._authRepository = authRepository;
         }
         [HttpGet]
         public async Task<IActionResult> GetUserWorkouts([FromQuery] string? filterOn, [FromQuery] string? filterQuery, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
         {
-            var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userid = _authRepository.GetCurrentUserId();
             if (userid == null)
             {
                 return Unauthorized();
@@ -45,7 +44,7 @@ namespace EnduraGenius.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> UpdateUserWorkout([FromRoute] Guid id, [FromBody] UpdateUserWorkoutRequestDTO updateUserWorkoutRequestDTO)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = _authRepository.GetCurrentUserId();
             if (userId == null)
             {
                 return Unauthorized();
