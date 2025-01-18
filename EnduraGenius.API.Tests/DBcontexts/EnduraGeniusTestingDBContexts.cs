@@ -26,7 +26,7 @@ namespace EnduraGenius.API.Tests.DBcontexts
         public async Task<EnduraGeniusDBContext> GetDBContextWithData()
         {
             var options = new DbContextOptionsBuilder<EnduraGeniusDBContext>()
-                .UseInMemoryDatabase(databaseName: "TestingEnduraGeniusDB")
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
             var dbContext = new EnduraGeniusDBContext(options);
             dbContext.Database.EnsureCreated();
