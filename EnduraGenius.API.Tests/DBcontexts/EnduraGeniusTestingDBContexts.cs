@@ -1795,6 +1795,7 @@ namespace EnduraGenius.API.Tests.DBcontexts
                 TimesPerformed = 7},
             };
                 dbContext.UserWorkouts.AddRange(userWorkouts);
+                await dbContext.SaveChangesAsync();
             }
             return dbContext;
         }

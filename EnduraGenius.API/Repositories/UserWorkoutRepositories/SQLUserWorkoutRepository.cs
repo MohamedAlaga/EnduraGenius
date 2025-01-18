@@ -13,7 +13,7 @@ namespace EnduraGenius.API.Repositories.UserWorkoutRepositories
         }
         public async Task<UserWorkout?> CreateUserWorkout(Workout Workout, string userId)
         {
-            var UserWorkout = await _enduraGeniusDBContext.UserWorkouts.FirstOrDefaultAsync(x => x.UserId == userId && x.WorkoutId == Workout.Id);
+            var UserWorkout = await _enduraGeniusDBContext.UserWorkouts.Where(x => x.UserId == userId).Where( x =>x.WorkoutId == Workout.Id).FirstOrDefaultAsync();
             if (UserWorkout != null)
             {
                 return null;
