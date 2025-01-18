@@ -16,24 +16,27 @@ namespace EnduraGenius.API.Repositories.PlansUsersRepositories
         }
         public async Task<PlansUsers?> CreatePlanUser(Plan plan, string userId)
         {
-
-            int maxPlanOrder = (await _dbContext.PlansUsers
-                .Where(x => x.UserId == userId)
-                .Select(pu => pu.PlanOrder)
-                .ToListAsync())
-                .DefaultIfEmpty(0)
-                .Max();
-            Console.WriteLine("max plan order is :" + maxPlanOrder);
-            var NewPlanUser = new PlansUsers
+            var userExists = _dbContext.Users.Find(userId);
+            if (userExists == null)
             {
-                Plan = plan,
-                UserId = userId,
-                PlanOrder = maxPlanOrder + 1
-            };
-            await _dbContext.PlansUsers.AddAsync(NewPlanUser);
-            await _dbContext.SaveChangesAsync();
-            return NewPlanUser;
-
+                return null;
+            }
+            int maxPlanOrder = (await _dbContext.PlansUsers
+                    .Where(x => x.UserId == userId)
+                    .Select(pu => pu.PlanOrder)
+                    .ToListAsync())
+                    .DefaultIfEmpty(0)
+                    .Max();
+                var NewPlanUser = new PlansUsers
+                {
+                    Plan = plan,
+                    UserId = userId,
+                    PlanOrder = maxPlanOrder + 1
+                };
+                await _dbContext.PlansUsers.AddAsync(NewPlanUser);
+                await _dbContext.SaveChangesAsync();
+                return NewPlanUser;
+            
         }
 
         public async Task<bool> DeletePlanUser(Guid id)
