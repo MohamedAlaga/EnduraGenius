@@ -14,7 +14,6 @@ namespace EnduraGenius.API.Repositories.InbodyRepository
         float CalculateRecommendedWaterIntake(float weight);
         float CalculateIdealBodyWeight(float height, bool isMale);
         float CalculateDailyProteinNeeds(float weight,int activityLevel);
-        Task<User?> GetUserById(string userId);
         Task<List<Inbody>> GetInbodyByUserId(string id);
         Task<Inbody?> GetInbodyAsync(Guid id, string userId);
         Task<Inbody?> InsertInbodyAsync(string userId, int ActivityLevel, string name);

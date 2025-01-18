@@ -73,7 +73,7 @@ namespace EnduraGenius.API.Repositories.InbodyRepository
             return FreeFatMass * 0.73f;
         }
 
-        public async Task<User?> GetUserById(string userId)
+        private async Task<User?> GetUserById(string userId)
         {
             if (userId == null)
             {
