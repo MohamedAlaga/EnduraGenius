@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
-using EnduraGenius.API.Data;
+﻿using EnduraGenius.API.Data;
 using EnduraGenius.API.Models.Domain;
 using EnduraGenius.API.Models.DTO;
 using EnduraGenius.API.Repositories.WorkoutsRepositories;
-using MailKit.Search;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Asn1.X509;
 
 namespace EnduraGenius.API.Repositories
 {
