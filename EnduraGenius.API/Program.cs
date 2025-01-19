@@ -16,8 +16,10 @@ using EnduraGenius.API.Repositories.UserRepository;
 using EnduraGenius.API.Repositories.UserWorkoutRepositories;
 using EnduraGenius.API.Repositories.WorkoutsRepositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -132,6 +134,9 @@ app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles(
+    new StaticFileOptions { FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "images")) ,
+    RequestPath = "/Images"});
 app.UseAuthentication();
 app.UseAuthorization();
 

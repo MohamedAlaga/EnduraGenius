@@ -6,6 +6,8 @@ using FluentAssertions;
 using EnduraGenius.API.Repositories.UserRepository;
 using AutoMapper;
 using FakeItEasy;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 
 
 
@@ -15,6 +17,8 @@ namespace EnduraGenius.API.Tests.Repositories.UserRepositoryTests
     {
         private readonly EnduraGeniusDBContext _dbcontext;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IHttpContextAccessor httpContextAccessor;
         public SQLUserRepositoryTests()
         {
             _dbcontext = new EnduraGeniusTestingDBContexts().GetDBContextWithData().Result;
@@ -25,7 +29,7 @@ namespace EnduraGenius.API.Tests.Repositories.UserRepositoryTests
         public async Task GetUserById_ShouldReturnUser_WhenFound()
         {
             //arrange
-            var userRepository = new SQLUserRepository(_dbcontext, _mapper);
+            var userRepository = new SQLUserRepository(_dbcontext, _mapper,_webHostEnvironment,httpContextAccessor);
             var userId = "29b0975c-b32f-4842-988a-e038f0470fde";
             //act
             var result = await userRepository.GetUserById(userId);
@@ -38,7 +42,7 @@ namespace EnduraGenius.API.Tests.Repositories.UserRepositoryTests
         public async Task GetUserById_ShouldReturnNull_WhenNotFound()
         {
             //arrange
-            var userRepository = new SQLUserRepository(_dbcontext, _mapper);
+            var userRepository = new SQLUserRepository(_dbcontext, _mapper, _webHostEnvironment, httpContextAccessor);
             var userId = Guid.NewGuid().ToString();
             //act
             var result = await userRepository.GetUserById(userId);
@@ -50,7 +54,7 @@ namespace EnduraGenius.API.Tests.Repositories.UserRepositoryTests
         public async Task EditUserBodyData_ShouldReturnUser_WhenEdited()
         {
             //arrange
-            var userRepository = new SQLUserRepository(_dbcontext, _mapper);
+            var userRepository = new SQLUserRepository(_dbcontext, _mapper, _webHostEnvironment, httpContextAccessor);
             var userId = "29b0975c-b32f-4842-988a-e038f0470fde";
             float weight = 80;
             int tall = 180;
@@ -72,7 +76,7 @@ namespace EnduraGenius.API.Tests.Repositories.UserRepositoryTests
         public async Task EditUserBodyData_ShouldReturnNull_WhenNotEdited()
         {
             //arrange
-            var userRepository = new SQLUserRepository(_dbcontext, _mapper);
+            var userRepository = new SQLUserRepository(_dbcontext, _mapper, _webHostEnvironment, httpContextAccessor);
             var userId = Guid.NewGuid().ToString();
             float weight = 80;
             int tall = 180;
@@ -88,7 +92,7 @@ namespace EnduraGenius.API.Tests.Repositories.UserRepositoryTests
         public async Task EditUserPoints_ShouldReturnUser_WhenEdited()
         {
             //arrange
-            var userRepository = new SQLUserRepository(_dbcontext, _mapper);
+            var userRepository = new SQLUserRepository(_dbcontext, _mapper, _webHostEnvironment, httpContextAccessor);
             var userId = "29b0975c-b32f-4842-988a-e038f0470fde";
             int points = 100;
             //act
@@ -102,7 +106,7 @@ namespace EnduraGenius.API.Tests.Repositories.UserRepositoryTests
         public async Task EditUserPoints_ShouldReturnNull_WhenNotEdited()
         {
             //arrange
-            var userRepository = new SQLUserRepository(_dbcontext, _mapper);
+            var userRepository = new SQLUserRepository(_dbcontext, _mapper, _webHostEnvironment, httpContextAccessor);
             var userId = Guid.NewGuid().ToString();
             int points = 100;
             //act
@@ -114,7 +118,7 @@ namespace EnduraGenius.API.Tests.Repositories.UserRepositoryTests
         public async Task AddUserPoints_ShouldReturnUser_WhenAdded()
         {
             //arrange
-            var userRepository = new SQLUserRepository(_dbcontext, _mapper);
+            var userRepository = new SQLUserRepository(_dbcontext, _mapper, _webHostEnvironment, httpContextAccessor);
             var userId = "29b0975c-b32f-4842-988a-e038f0470fde";
             int points = 100;
             var user = await userRepository.GetUserById(userId);

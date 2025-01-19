@@ -10,5 +10,6 @@ namespace EnduraGenius.API.Models.Domain
         public int Age { get; set; }
         public bool IsMale { get; set; }
         public bool isPublic { get; set; } = false;
+        public string? ProfilePicture { get; set; }
     }
 }

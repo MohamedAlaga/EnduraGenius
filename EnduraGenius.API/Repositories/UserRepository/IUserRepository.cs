@@ -10,5 +10,6 @@ namespace EnduraGenius.API.Repositories.UserRepository
         Task<User?> EditUserPoints(string userId, int points);
         Task<User?> AddUserPoints(string userId, int points);
         Task<List<LeaderBoardResponseDTO>> LeaderBoard();
+        Task<string?> UpdateUserPicture(string userId,IFormFile file);
     }
 }

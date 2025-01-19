@@ -101,5 +101,40 @@ namespace EnduraGenius.API.Controllers
             userDTO.userWorkouts = _mapper.Map<List<UserWorkoutResponseDTO>>(userWorkouts);
             return Ok(_mapper.Map<UserProfileResponseDTO>(userDTO));
         }
+
+        [HttpPut]
+        [Route("UpdateUserPicture")]
+        public async Task<IActionResult> UpdateUserPicture([FromForm] UpdateProfilePicRequestDTO picRequestDTO)
+        {
+            var userId = _authRepository.GetCurrentUserId();
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            var user = await this._userRepository.GetUserById(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            if (picRequestDTO == null)
+            {
+                return BadRequest();
+            }
+            var allowedExtensions = new string[] { ".jpg", ".jpeg", ".png" };
+            if (!allowedExtensions.Contains(Path.GetExtension(picRequestDTO.newPicture.FileName)))
+            {
+                return BadRequest("unsupported file");
+            }
+            if (picRequestDTO.newPicture.Length > 10485760)
+            {
+                return BadRequest("file is too big");
+            }
+            var newPictureLink = await this._userRepository.UpdateUserPicture(userId, picRequestDTO.newPicture);
+            if (newPictureLink == null)
+            {
+                return BadRequest();
+            }
+            return Ok(newPictureLink);
+        }
     }
 }
