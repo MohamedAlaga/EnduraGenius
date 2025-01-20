@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EnduraGenius.API.Controllers
 {
+    /// <summary>
+    /// User Controller
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
@@ -19,6 +22,9 @@ namespace EnduraGenius.API.Controllers
         private readonly IUserWorkoutRepository _userWorkoutRepository;
         private readonly IMapper _mapper;
         private readonly IAuthRepository _authRepository;
+        /// <summary>
+        /// user controller constructor
+        /// </summary>
         public UserController(IUserRepository userRepository, IMapper mapper , IUserWorkoutRepository userWorkoutRepository, IAuthRepository authRepository)
         {
             this._mapper = mapper;
@@ -27,6 +33,18 @@ namespace EnduraGenius.API.Controllers
             this._authRepository = authRepository;
         }
 
+        /// <summary>
+        /// Get user by id
+        /// </summary>
+        /// <param name="WorkoutsFilterOn">name of the param to filter results based on</param>
+        /// <param name="WorkoutsFilterQuery">search query</param>
+        /// <param name="WorkoutsPageNumber">the number of page needed</param>
+        /// <param name="WorkoutsPageSize">the size of the page</param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 200 OK response contains the plan data.
+        /// - Returns a 401 Unauthorized response if the user not found.
+        /// </returns>
         [HttpGet]
         public async Task<IActionResult> GetUser([FromQuery] string? WorkoutsFilterOn, [FromQuery] string? WorkoutsFilterQuery, [FromQuery] int WorkoutsPageNumber = 1, [FromQuery] int WorkoutsPageSize = 20)
         {
@@ -46,6 +64,15 @@ namespace EnduraGenius.API.Controllers
             return Ok(userDTO);
         }
 
+        /// <summary>
+        /// Update user points
+        /// </summary>
+        /// <param name="newPoints">the new user points</param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 200 OK response contains the new points.
+        /// - Returns a 401 Unauthorized response if the user not found.
+        /// </returns>
         [HttpPut]
         [Route("Points")]
         public async Task<IActionResult> UpdateUserPoints([FromBody] EditPointsDTO newPoints )
@@ -64,6 +91,15 @@ namespace EnduraGenius.API.Controllers
             return Ok(newPoints);
         }
 
+        /// <summary>
+        /// add points to the user
+        /// </summary>
+        /// <param name="AddPoints">the points to be added</param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 200 OK response contains the new points.
+        /// - Returns a 401 Unauthorized response if the user not found.
+        /// </returns>
         [HttpPut]
         [Route("Points/Add")]
         public async Task<IActionResult> AddUserPoints([FromBody] EditPointsDTO AddPoints)
@@ -82,6 +118,16 @@ namespace EnduraGenius.API.Controllers
             return Ok(AddPoints);
         }
 
+        /// <summary>
+        /// Update user body data
+        /// </summary>
+        /// <param name="updateUserBodyDTO">DTO contains the user new data</param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 200 OK response contains the new user profile.
+        /// - Returns a 401 Unauthorized response if the user not found.
+        /// - Returns a 404 Not Found response if the user not Updated.
+        /// </returns>
         [HttpPut]
         [Route("body")]
         public async Task<IActionResult> updateUserBody([FromBody] UpdateUserBodyDTO updateUserBodyDTO)
@@ -102,6 +148,16 @@ namespace EnduraGenius.API.Controllers
             return Ok(_mapper.Map<UserProfileResponseDTO>(userDTO));
         }
 
+        /// <summary>
+        /// Update user picture
+        /// </summary>
+        /// <param name="picRequestDTO">the new user pic</param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 200 OK response contains new link.
+        /// - Returns a 400 Bad Request if no file sent.
+        /// - Returns a 404 Not Found response if the user not found.
+        /// </returns>
         [HttpPut]
         [Route("UpdateUserPicture")]
         public async Task<IActionResult> UpdateUserPicture([FromForm] UpdateProfilePicRequestDTO picRequestDTO)
@@ -109,13 +165,9 @@ namespace EnduraGenius.API.Controllers
             var userId = _authRepository.GetCurrentUserId();
             if (userId == null)
             {
-                return Unauthorized();
-            }
-            var user = await this._userRepository.GetUserById(userId);
-            if (user == null)
-            {
                 return NotFound();
             }
+            var user = await this._userRepository.GetUserById(userId);
             if (picRequestDTO == null)
             {
                 return BadRequest();

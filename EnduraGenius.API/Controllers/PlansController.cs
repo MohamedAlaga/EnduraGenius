@@ -14,6 +14,9 @@ using System.Security.Claims;
 using EnduraGenius.API.Repositories.AuthRepository;
 namespace EnduraGenius.API.Controllers
 {
+    /// <summary>
+    /// Plans Controller
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
@@ -26,6 +29,9 @@ namespace EnduraGenius.API.Controllers
         private readonly IUserWorkoutRepository _userWorkoutRepository;
         private readonly IWorkoutsRepository _workoutsRepository;
         private readonly IAuthRepository _authRepository;
+        /// <summary>
+        ///  constractor for PlansController
+        /// </summary>
         public PlansController( IPlanRepository plansRepository, IMapper mapper , IPlanWorkoutsRepository planWorkoutsRepository, IUserWorkoutRepository _userWorkoutRepository, IWorkoutsRepository workoutsRepository, IPlansUsersRepository plansUsersRepository, IAuthRepository authRepository)
         {
             this._plansRepository = plansRepository;
@@ -36,8 +42,14 @@ namespace EnduraGenius.API.Controllers
             this._plansUsersRepository = plansUsersRepository;
             this._authRepository = authRepository;
         }
-        // GET: api/Plans
-        // get all plans from the database
+        /// <summary>
+        /// Get all available plans for the user .
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 200 OK response All availbale plans .
+        /// - Returns a 401 Unauthorized response if the user not found.
+        /// </returns>
         [HttpGet]
         public async Task<IActionResult> GetAllplans()
         {
@@ -57,8 +69,17 @@ namespace EnduraGenius.API.Controllers
             }
             return Ok(plansDto);
         }
-        // GET: api/Plans/{id}
-        // get plan by id
+
+        /// <summary>
+        /// Get a plan by id
+        /// </summary>
+        /// <param name="id">the id of the requested plan</param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 200 OK response contains the requested plan .
+        /// - Returns a 401 Unauthorized response if the user not found.
+        /// - Returns a 404 Not Found response if the plan not found.
+        /// </returns>
         [HttpGet]
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetPlanById([FromRoute] Guid id)
@@ -79,8 +100,16 @@ namespace EnduraGenius.API.Controllers
             return Ok(planDto);
         }
 
-        // POST: api/Plans
-        // create a [plan]
+        /// <summary>
+        /// Create a new plan
+        /// </summary>
+        /// <param name="plan">DTO contains all required data for the plan</param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 201 CreatedAtAction response contains the new plan .
+        /// - Returns a 401 Unauthorized response if the user not found.
+        /// - Returns a 400 Bad Request if the data is not correct.
+        /// </returns>
         [HttpPost]
         public async Task<IActionResult> CreatePlan([FromBody] CreatePlanRequestDTO plan)
         {
@@ -117,9 +146,17 @@ namespace EnduraGenius.API.Controllers
             return CreatedAtAction(nameof(GetPlanById), new { id = newplan.Id },planDto);
         }
 
-
-        // PUT: api/Plans/{id}
-        // update a plan
+        /// <summary>
+        /// Update a plan
+        /// </summary>
+        /// <param name="id">the requested plan id</param>
+        /// <param name="plan">the new plan data</param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 200 OK response if updated succefully.
+        /// - Returns a 401 Unauthorized response if the user not found.
+        /// - Returns a 404 Not Found response if the plan not found.
+        /// </returns>
         [HttpPut]
         [Route("{id:Guid}")]
         public async Task<IActionResult> UpdatePlan([FromRoute] Guid id, [FromBody] UpdatePlanRequestDTO plan)
@@ -145,6 +182,14 @@ namespace EnduraGenius.API.Controllers
             return Ok(planDto);
         }
 
+        /// <summary>
+        /// create a custom prosplit plan based on current user data
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 200 OK response contains the plan data.
+        /// - Returns a 401 Unauthorized response if the user not found.
+        /// </returns>
         [HttpGet]
         [Route("custom/prosplit")]
         public async Task<IActionResult> GetCustomProsplit()
@@ -159,6 +204,14 @@ namespace EnduraGenius.API.Controllers
         }
 
 
+        /// <summary>
+        /// create a custom upper lower plan based on current user data
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 200 OK response contains the plan data.
+        /// - Returns a 401 Unauthorized response if the user not found.
+        /// </returns>
         [HttpGet]
         [Route("custom/UpperLower")]
         public async Task<IActionResult> GetCustomUpperLower()

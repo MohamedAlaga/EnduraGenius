@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 using EnduraGenius.API.Data;
 using EnduraGenius.API.Mappings;
@@ -40,6 +41,8 @@ builder.Logging.AddSerilog(logger);
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(
     options =>
@@ -70,6 +73,7 @@ builder.Services.AddSwaggerGen(
             new List<string>()
             }
         });
+        options.IncludeXmlComments(xmlPath);
     });
 builder.Services.AddDbContext<EnduraGeniusDBContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("mysql")));

@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EnduraGenius.API.Controllers
 {
+    /// <summary>
+    /// controller to handle user inbody data
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
@@ -15,12 +18,27 @@ namespace EnduraGenius.API.Controllers
         private readonly IInbodyRepository _inbodyRepository;
         private readonly IMapper _mapper;
         private readonly IAuthRepository _authRepository;
+        /// <summary>
+        /// Constructor for InbodyController
+        /// </summary>
+        /// <param name="mapper"> mapping service</param>
+        /// <param name="inbodyRepository"> repository to fetch all inbody data</param>
+        /// <param name="authRepository"> repository to get auth data (current user id/roles)</param>
         public InbodyController(IMapper mapper, IInbodyRepository inbodyRepository, IAuthRepository authRepository)
         {
             this._inbodyRepository = inbodyRepository;
             this._mapper = mapper;
             this._authRepository = authRepository;
         }
+
+        /// <summary>
+        /// Get all inbody data for the current user
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 200 OK response contains all previous inbodies if user is found .
+        /// - Returns a 401 Bad Request response if the user not found.
+        /// </returns>
         [HttpGet]
         public async Task<IActionResult> GetInbody()
         {
@@ -34,6 +52,16 @@ namespace EnduraGenius.API.Controllers
            return Ok(inbodyDTO);
         }
 
+        /// <summary>
+        /// Post new inbody data for the current user
+        /// </summary>
+        /// <param name="requestInbodyDTO">DTO to handle required data for the inbody</param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 201 CreatedAtACtion response conains the new inbody and it's location in the header .
+        /// - Returns a 401 Bad Request response if the user not found.
+        /// - Returns a 400 Bad Request response if the inbody data is invalid.
+        /// </returns>
         [HttpPost]
         public async Task<IActionResult> PostInbody([FromBody] RequestInbodyDTO requestInbodyDTO)
         {
@@ -51,6 +79,16 @@ namespace EnduraGenius.API.Controllers
             return CreatedAtAction(nameof(GetInbodyById), new { id = inbody.Id },inbodyDTO);
         }
 
+        /// <summary>
+        /// get one inbody data for the current user
+        /// </summary>
+        /// <param name="id"> the id of the needed inbody</param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 200 OK response contains requested inbody .
+        /// - Returns a 401 Bad Request response if the user not found.
+        /// - Returns a 404 Bad Request response if the inbody id does not exist.
+        /// </returns>
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> GetInbodyById([FromRoute]Guid id)
@@ -68,6 +106,16 @@ namespace EnduraGenius.API.Controllers
             var inbodyDTO = _mapper.Map<InbodyResponseDTO>(inbody);
             return Ok(inbodyDTO);
         }
+        /// <summary>
+        /// Delete one inbody data for the current user
+        /// </summary>
+        /// <param name="id">the id of the inbody</param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 200 OK response if the inbody deleted succefully.
+        /// - Returns a 401 Bad Request response if the user not found.
+        /// - Returns a 404 Bad Request response if the inbody id does not exist.
+        /// </returns>
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> DeleteInbody(Guid id)

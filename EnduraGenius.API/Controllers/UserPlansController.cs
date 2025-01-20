@@ -13,6 +13,9 @@ using EnduraGenius.API.Repositories.AuthRepository;
 
 namespace EnduraGenius.API.Controllers
 {
+    /// <summary>
+    /// user controller
+    /// </summary>
     [Route("api/Plans/User/")]
     [ApiController]
     [Authorize]
@@ -23,6 +26,9 @@ namespace EnduraGenius.API.Controllers
         private readonly IMapper _mapper;
         private readonly IPlanWorkoutsRepository _planWorkoutsRepository;
         private readonly IAuthRepository _authRepository;
+        /// <summary>
+        /// Constructor for UserPlansController
+        /// </summary>
         public UserPlansController(IPlansUsersRepository plansUsersRepository, IMapper mapper, IPlanRepository plan, IPlanWorkoutsRepository planWorkoutsRepository, IAuthRepository authRepository)
         {
             this._plansUsersRepository = plansUsersRepository;
@@ -31,6 +37,14 @@ namespace EnduraGenius.API.Controllers
             this._planWorkoutsRepository = planWorkoutsRepository;
             this._authRepository = authRepository;
         }
+        /// <summary>
+        /// Get all plans for the current user
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 200 OK response contains the list of all plans.
+        /// - Returns a 401 Unauthorized response if the user not found.
+        /// </returns>
         [HttpGet]
         public async Task<IActionResult> GetUserPlans()
         {
@@ -59,6 +73,15 @@ namespace EnduraGenius.API.Controllers
             }
             return Ok(plansDto);
         }
+        /// <summary>
+        /// Get the current plan for the current user
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 200 OK response contains the current plan.
+        /// - Returns a 401 Unauthorized response if the user not found.
+        /// - Returns a 404 Not Found response if the current plan not found.
+        /// </returns>
         [HttpGet]
         [Route("Current")]
         public async Task<IActionResult> GetCurrentPlan()
@@ -83,6 +106,17 @@ namespace EnduraGenius.API.Controllers
             planDto.workouts = _mapper.Map<List<PlanWorkoutsResponseDTO>>(PlansWorkouts);
             return Ok(planDto);
         }
+
+        /// <summary>
+        /// set a plan as current for the current user
+        /// </summary>
+        /// <param name="PlanId">the plan to be set as current</param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 200 OK Response.
+        /// - Returns a 401 Unauthorized response if the user not found.
+        /// - Returns a 404 Not Found response if the current plan not found.
+        /// </returns>
         [HttpPut]
         [Route("Current/{PlanId:Guid}")]
         public async Task<IActionResult> SetCurrentPlan([FromRoute] Guid PlanId)
@@ -100,6 +134,16 @@ namespace EnduraGenius.API.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Unsubscribe to a plan
+        /// </summary>
+        /// <param name="PlanId">the id of the plan to delete</param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 200 OK Response.
+        /// - Returns a 401 Unauthorized response if the user not found.
+        /// - Returns a 404 Not Found response if the current plan not found.
+        /// </returns>
         [HttpDelete]
         [Route("Unsubscribe/{PlanId:Guid}")]
         public async Task<IActionResult> UnsubscribeFromPlan([FromRoute] Guid PlanId)

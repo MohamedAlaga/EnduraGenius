@@ -13,6 +13,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EnduraGenius.API.Controllers
 {
+    /// <summary>
+    /// Plan Workouts Controller
+    /// </summary>
     [Route("api/Plan/Workouts")]
     [ApiController]
     [Authorize]
@@ -24,6 +27,9 @@ namespace EnduraGenius.API.Controllers
         private readonly IUserWorkoutRepository _userWorkoutRepository;
         private readonly IMapper _mapper;
         private readonly IAuthRepository _authRepository;
+        /// <summary>
+        /// constractor for PlanWorkoutsController
+        /// </summary>
         public PlanWorkoutsController(IPlanWorkoutsRepository planWorkoutsRepository, IPlanRepository planRepository, IWorkoutsRepository _workoutsRepository, IMapper Imapper, IUserWorkoutRepository userWorkoutRepository, IAuthRepository authRepository)
         {
             this._planWorkoutsRepository = planWorkoutsRepository;
@@ -34,6 +40,17 @@ namespace EnduraGenius.API.Controllers
             this._authRepository = authRepository;
         }
 
+        /// <summary>
+        /// update a spacefic plan workout
+        /// </summary>
+        /// <param name="id">the id of requested planworkout</param>
+        /// <param name="newWorkout">DTO contains new planworkout data</param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 200 OK response contains new plan workout data if updated succefully.
+        /// - Returns a 401 Unauthorized response if the user not found.
+        /// - Returns a 400 Bad Request response if the data is incorrect.
+        /// </returns>
         [HttpPut]
         [Route("{id:Guid}")]
         public async Task<IActionResult> UpdatePlanWorkout([FromRoute] Guid id, [FromBody] UpdatePlanWorkoutRequestDTO newWorkout)
@@ -53,6 +70,16 @@ namespace EnduraGenius.API.Controllers
             return Ok(newPlanDto);
         }
 
+        /// <summary>
+        /// get all plan workouts
+        /// </summary>
+        /// <param name="id">requested plan id</param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 200 OK response contains all plan workouts.
+        /// - Returns a 401 Unauthorized response if the user not found.
+        /// - Returns a 404 NotFound response if the plan not found.
+        /// </returns>
         [HttpGet]
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetPlanWorkoutById([FromRoute] Guid id)
@@ -70,6 +97,16 @@ namespace EnduraGenius.API.Controllers
             var planWorkoutDto = _mapper.Map<PlanWorkoutsResponseDTO>(planWorkout);
             return Ok(planWorkoutDto);
         }
+
+        /// <summary>
+        /// add a workout to a plan by creating a new plan workout
+        /// </summary>
+        /// <param name="planWorkout"></param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 201 Created at Action response contains all plan workouts.
+        /// - Returns a 401 Unauthorized response if the user not found.
+        /// </returns>
         [HttpPost]
         public async Task<IActionResult> CreatePlanWorkout([FromBody] CreatePlanWorkoutRequestDTO planWorkout)
         {
@@ -102,6 +139,15 @@ namespace EnduraGenius.API.Controllers
             return CreatedAtAction(nameof(GetPlanWorkoutById), new { id = planWorkoutCreated.Id }, planWorkoutDto);
         }
 
+        /// <summary>
+        /// delete workout from a plan
+        /// </summary>
+        /// <param name="id">id of the planworkout object</param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation:
+        /// - Returns a 200 OK response if deleted succefully.
+        /// - Returns a 401 Unauthorized response if the user not found.
+        /// </returns>
         [HttpDelete]
         [Route("{id:Guid}")]
         public async Task<IActionResult> DeletePlanWorkout([FromRoute] Guid id)
