@@ -1,0 +1,5 @@
+email_adress            roles           password
+adel@example.com        user            Mo123123.
+admin@EnduraGenius.com  user + admin    Mo123123.
+omar@example.com        user            Mo123123.
+user@example.com        user + admin    Mo123123.

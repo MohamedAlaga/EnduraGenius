@@ -31,7 +31,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Minute)
+    .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
     .MinimumLevel.Error()
     .CreateLogger();
 
@@ -75,6 +75,9 @@ builder.Services.AddSwaggerGen(
         });
         options.IncludeXmlComments(xmlPath);
     });
+builder.Services.Configure<EmailSettingsModel>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddOptions();
+
 builder.Services.AddDbContext<EnduraGeniusDBContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("mysql")));
 builder.Services.AddTransient<IEmailSender, EmailSender>();
@@ -89,7 +92,6 @@ builder.Services.AddScoped<IUserWorkoutRepository,SQLUserWorkoutRepository>();
 builder.Services.AddScoped<IInbodyRepository,SQLInbodyRepository>();
 builder.Services.AddScoped<IUserRepository, SQLUserRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
