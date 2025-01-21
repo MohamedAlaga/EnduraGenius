@@ -90,7 +90,7 @@ Normal users have access to features tailored to their fitness journey. They can
 - **CRUD Inbody**: Manage their body composition data (e.g., weight, fat percentage).
 - **See Certified Workouts**: Browse workouts that have been approved by admins.
 
-## **Not Authorized (Guest)**
+### **Not Authorized (Guest)**
 Guests have limited access to the application. They can:
 
 - **See the Leaderboard**: View top users based on their fitness achievements and points.
