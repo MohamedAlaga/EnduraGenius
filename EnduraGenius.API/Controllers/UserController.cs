@@ -22,15 +22,17 @@ namespace EnduraGenius.API.Controllers
         private readonly IUserWorkoutRepository _userWorkoutRepository;
         private readonly IMapper _mapper;
         private readonly IAuthRepository _authRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         /// <summary>
         /// user controller constructor
         /// </summary>
-        public UserController(IUserRepository userRepository, IMapper mapper , IUserWorkoutRepository userWorkoutRepository, IAuthRepository authRepository)
+        public UserController(IUserRepository userRepository, IMapper mapper , IUserWorkoutRepository userWorkoutRepository, IAuthRepository authRepository, IHttpContextAccessor httpContextAccessor)
         {
             this._mapper = mapper;
             this._userRepository = userRepository;
             this._userWorkoutRepository = userWorkoutRepository;
             this._authRepository = authRepository;
+            this._httpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
@@ -61,6 +63,10 @@ namespace EnduraGenius.API.Controllers
             var UserWorkouts = await this._userWorkoutRepository.GetUserWorkoutByUserId(userId, WorkoutsFilterOn, WorkoutsFilterQuery, WorkoutsPageNumber, WorkoutsPageSize);
             var userDTO = _mapper.Map<UserProfileResponseDTO>(user);
             userDTO.userWorkouts = _mapper.Map<List<UserWorkoutResponseDTO>>(UserWorkouts);
+            if (userDTO.ProfilePicture != null)
+            {
+                userDTO.ProfilePicture = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}/{userDTO.ProfilePicture}";
+            }
             return Ok(userDTO);
         }
 

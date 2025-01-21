@@ -8,6 +8,7 @@ using EnduraGenius.API.Controllers;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace EnduraGenius.API.Tests.Controller
 {
@@ -17,12 +18,14 @@ namespace EnduraGenius.API.Tests.Controller
         private readonly IUserWorkoutRepository _userWorkoutRepository;
         private readonly IMapper _mapper;
         private readonly IAuthRepository _authRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         public UserControllerTests()
         {
             _userRepository = A.Fake<IUserRepository>();
             _userWorkoutRepository = A.Fake<IUserWorkoutRepository>();
             _mapper = A.Fake<IMapper>();
             _authRepository = A.Fake<IAuthRepository>();
+            _httpContextAccessor = A.Fake<IHttpContextAccessor>();
         }
 
         [Fact]
@@ -40,7 +43,7 @@ namespace EnduraGenius.API.Tests.Controller
             var userWorkoutDTO = new List<UserWorkoutResponseDTO>();
             A.CallTo(() => _mapper.Map<List<UserWorkoutResponseDTO>>(userWorkouts)).Returns(userWorkoutDTO);
             // Act
-            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository);
+            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository, _httpContextAccessor);
             var result = await controller.GetUser(null,null);
             // Assert
             result.Should().NotBeNull();
@@ -52,7 +55,7 @@ namespace EnduraGenius.API.Tests.Controller
             // Arrange
             A.CallTo(() => _authRepository.GetCurrentUserId()).Returns(null);
             // Act
-            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository);
+            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository, _httpContextAccessor);
             var result = await controller.GetUser(null, null);
             // Assert
             result.Should().NotBeNull();
@@ -66,7 +69,7 @@ namespace EnduraGenius.API.Tests.Controller
             A.CallTo(() => _authRepository.GetCurrentUserId()).Returns(userId);
             A.CallTo(() => _userRepository.GetUserById(userId)).Returns((User?)null);
             // Act
-            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository);
+            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository, _httpContextAccessor);
             var result = await controller.GetUser(null, null);
             // Assert
             result.Should().NotBeNull();
@@ -81,7 +84,7 @@ namespace EnduraGenius.API.Tests.Controller
             var user = new User();
             A.CallTo(() => _userRepository.EditUserPoints(userId, A<int>._)).Returns(user);
             var newPoints = new EditPointsDTO();
-            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository);
+            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository, _httpContextAccessor);
             // Act
             var result = await controller.UpdateUserPoints(newPoints);
             // Assert
@@ -94,7 +97,7 @@ namespace EnduraGenius.API.Tests.Controller
             // Arrange
             A.CallTo(() => _authRepository.GetCurrentUserId()).Returns(null);
             var newPoints = new EditPointsDTO();
-            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository);
+            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository, _httpContextAccessor);
             // Act
             var result = await controller.UpdateUserPoints(newPoints);
             // Assert
@@ -109,7 +112,7 @@ namespace EnduraGenius.API.Tests.Controller
             A.CallTo(() => _authRepository.GetCurrentUserId()).Returns(userId);
             A.CallTo(() => _userRepository.EditUserPoints(userId, A<int>._)).Returns((User?)null);
             var newPoints = new EditPointsDTO();
-            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository);
+            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository, _httpContextAccessor);
             // Act
             var result = await controller.UpdateUserPoints(newPoints);
             // Assert
@@ -125,7 +128,7 @@ namespace EnduraGenius.API.Tests.Controller
             var user = new User();
             A.CallTo(() => _userRepository.AddUserPoints(userId, A<int>._)).Returns(user);
             var newPoints = new EditPointsDTO();
-            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository);
+            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository, _httpContextAccessor);
             // Act
             var result = await controller.AddUserPoints(newPoints);
             // Assert
@@ -138,7 +141,7 @@ namespace EnduraGenius.API.Tests.Controller
             // Arrange
             A.CallTo(() => _authRepository.GetCurrentUserId()).Returns(null);
             var newPoints = new EditPointsDTO();
-            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository);
+            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository, _httpContextAccessor);
             // Act
             var result = await controller.AddUserPoints(newPoints);
             // Assert
@@ -153,7 +156,7 @@ namespace EnduraGenius.API.Tests.Controller
             A.CallTo(() => _authRepository.GetCurrentUserId()).Returns(userId);
             A.CallTo(() => _userRepository.AddUserPoints(userId, A<int>._)).Returns((User?)null);
             var newPoints = new EditPointsDTO();
-            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository);
+            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository, _httpContextAccessor);
             // Act
             var result = await controller.AddUserPoints(newPoints);
             // Assert
@@ -170,7 +173,7 @@ namespace EnduraGenius.API.Tests.Controller
             var user = new User();
             A.CallTo(() => _userRepository.GetUserById(userId)).Returns(user);
             var updateUserBodyDTO = new UpdateUserBodyDTO();
-            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository);
+            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository, _httpContextAccessor);
             // Act
             var result = await controller.updateUserBody(updateUserBodyDTO);
             // Assert
@@ -183,7 +186,7 @@ namespace EnduraGenius.API.Tests.Controller
             // Arrange
             A.CallTo(() => _authRepository.GetCurrentUserId()).Returns(null);
             var updateUserBodyDTO = new UpdateUserBodyDTO();
-            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository);
+            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository, _httpContextAccessor);
             // Act
             var result = await controller.updateUserBody(updateUserBodyDTO);
             // Assert
@@ -198,7 +201,7 @@ namespace EnduraGenius.API.Tests.Controller
             A.CallTo(() => _authRepository.GetCurrentUserId()).Returns(userId);
             A.CallTo(() => _userRepository.EditUserBodyData(A<string>._,null,null,null,null,null)).Returns((User?)null);
             var updateUserBodyDTO = new UpdateUserBodyDTO();
-            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository);
+            var controller = new UserController(_userRepository, _mapper, _userWorkoutRepository, _authRepository, _httpContextAccessor);
             // Act
             var result = await controller.updateUserBody(updateUserBodyDTO);
             // Assert
