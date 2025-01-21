@@ -78,7 +78,7 @@ namespace EnduraGenius.API.Tests.DBcontexts
                 var UserRole = new IdentityRole { Id = "de6594c7-64c1-4d22-bdfc-4de7eda3628c", ConcurrencyStamp = "de6594c7-64c1-4d22-bdfc-4de7eda3628c", Name = "User", NormalizedName = "User".ToUpper() };
                 dbContext.Roles.AddRange(new List<IdentityRole> { AdminRole, UserRole });
             }
-            if (await dbContext.Users.CountAsync() <= 0)
+            if (await dbContext.Users.CountAsync() <= 1)
             {
                 var user1 = new User
                 {
@@ -135,8 +135,8 @@ namespace EnduraGenius.API.Tests.DBcontexts
                     WeightInKg = 95,
                     Age = 22,
                     TallInCm = 182,
-                    UserName = "Mohamed_Alage",
-                    NormalizedUserName = "Mohamed_Alage".ToUpper(),
+                    UserName = "Mohamed_Alage2",
+                    NormalizedUserName = "Mohamed_Alage2".ToUpper(),
                     Email = "user@example.com",
                     NormalizedEmail = "user@example.com".ToUpper(),
                     EmailConfirmed = false,

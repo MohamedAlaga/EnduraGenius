@@ -25,7 +25,23 @@ namespace EnduraGenius.API.Data
 
             var adminId = "f02a0229-1fa7-4c12-8985-2436ff1b495b";
             var userId = "de6594c7-64c1-4d22-bdfc-4de7eda3628c";
-
+            var adminuser = new User {
+                Id = "48149538-3d20-4314-9f75-33a92d9c2b24",
+                Points = 0,
+                WeightInKg = 95 ,
+                Age = 22,TallInCm = 182 ,
+                UserName = "Alaga_Admin",
+                NormalizedUserName = "Alaga_Admin".ToUpper(),
+                Email = "admin@EnduraGenius.com",
+                NormalizedEmail = "ADMIN@ENDURAGENIUS.COM",
+                EmailConfirmed = false,
+                PasswordHash = "AQAAAAIAAYagAAAAEB8mSwn38vSJ7/KNpsmlbKq6WJrDHdhP0KFAIf+XSJ4OxMtfq7eqdLrv3IxTrqbSQg==",
+                SecurityStamp = "FJAS5D5VKCP3AVUILWGTTBJWK2TLWS36",
+                ConcurrencyStamp = "f02a0229-1fa7-4c12-8985-2436ff1b495b",
+                LockoutEnabled = true,
+                IsMale = true,
+                isPublic = true,
+            };
             var roles = new List<IdentityRole>
             {
                 new IdentityRole
@@ -60,6 +76,19 @@ namespace EnduraGenius.API.Data
             new Muscle { Id = Guid.Parse("7be040bd-2759-4b13-a049-8cde648dfd75"), Name = "Forearms", Description = "Muscles of the forearm responsible for wrist and finger movements." },
             new Muscle { Id = Guid.Parse("6ed76f26-52f2-4350-b0b3-103e370f0835"), Name = "Biceps", Description = "Front upper arm muscle responsible for elbow flexion." },
             new Muscle { Id = Guid.Parse("f19a5492-81ea-4ebc-8b03-1198e8440a58"), Name = "Triceps", Description = "Back upper arm muscle responsible for elbow extension." }};
+            var adminRoles = new List<IdentityUserRole<string>>
+            {
+                new IdentityUserRole<string>
+                {
+                    RoleId = adminId,
+                    UserId = adminuser.Id
+                },
+                new IdentityUserRole<string>
+                {
+                    RoleId = userId,
+                    UserId = adminuser.Id
+                }
+            };
             builder.Entity<Plan>()
                 .HasOne(p => p.planCreator)
                 .WithMany()
@@ -73,6 +102,8 @@ namespace EnduraGenius.API.Data
                 .OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<IdentityRole>().HasData(roles);
+            builder.Entity<User>().HasData(adminuser);
+            builder.Entity<IdentityUserRole<string>>().HasData(adminRoles);
             builder.Entity<Muscle>().HasData(muscles);
         }
     }
