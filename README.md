@@ -119,9 +119,6 @@ dotnet run
 - **Endpoint: /api/Auth/Login**
 - **Request Body**:
 ```json
-json
-Copy
-Edit
 {
   "emailAdress": "string",
   "password": "string"
