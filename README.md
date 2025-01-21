@@ -8,6 +8,7 @@
 - [Features](#features)
 - [Getting Started](#getting-started)
 - [Installation](#installation)
+- [Roles and Available Actions](#Roles-and-Available-Actions)
 - [Usage](#usage)
 - [API Endpoints](#api-endpoints)
 - [Technologies Used](#technologies-used)
@@ -70,6 +71,29 @@ dotnet run
     - Any login data provided in users.txt is only valid for the database backup located in the ./dbbackup directory.
 10. Optional: Get a Free Mailbox for Testing
 - If you need a mailbox for testing purposes, you can generate one for free using [Ethereal Email](https://ethereal.email/).
+
+
+## **Roles and Available Actions**
+### **Admin**
+Admins have full control over the application's core functionalities. They can:
+
+- **Certify or Uncertify Workouts**: Approve or disapprove workouts to ensure quality and standards.
+- **CRUD Workouts**: Create, Read, Update, and Delete workouts in the system.
+- **CRUD Muscles**: Manage the muscle groups database for workouts.
+- **Create New Admins**: Add new admin accounts to manage the application.
+
+### **Normal User**
+Normal users have access to features tailored to their fitness journey. They can:
+
+- **CRUD Plans**: Create, Read, Update, and Delete personal fitness plans.
+- **Subscribe to Public Plans**: Access and follow plans shared by the community.
+- **CRUD Inbody**: Manage their body composition data (e.g., weight, fat percentage).
+- **See Certified Workouts**: Browse workouts that have been approved by admins.
+
+## **Not Authorized (Guest)**
+Guests have limited access to the application. They can:
+
+- **See the Leaderboard**: View top users based on their fitness achievements and points.
 
 
 ## **Usage**
