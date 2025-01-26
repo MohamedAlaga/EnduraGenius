@@ -38,11 +38,12 @@
 ## **Installation**
 1. Clone the repository:
 ```bash 
-git clone https://github.com/your-username/endura-genius.git
+git clone https://github.com/MohamedAlaga/EnduraGenius.git
 ```
 2. Navigate to the project directory
 ```bash
-cd endura-genius
+cd EnduraGenius
+cd EnduraGenius.API
 ```
 3. Restore dependencies:
 ```bash
@@ -60,7 +61,7 @@ dotnet run
 7. First Admin Account:
   The First Admin account is set with 
       - email : ```admin@EnduraGenius.com``` 
-      - password : ```Mo123123```.
+      - password : ```Mo123123.```
 8. Optional: Use Pre-existing Database Backup for Immediate Testing
     - If you want to test the application immediately, you can restore the database from the provided backup:
         - The backup file is located in the [EnduraGenius.API.DatabaseBackup](./EnduraGenius.API.DatabaseBackup/) directory.

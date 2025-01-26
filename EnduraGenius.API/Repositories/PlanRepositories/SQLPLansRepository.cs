@@ -268,7 +268,6 @@ namespace EnduraGenius.API.Repositories.PlanRepositories
                 .Take(itemsNumber)
                 .Select(w => w.Workout)
                 .ToListAsync();
-            Console.WriteLine(leastPlayedWorkouts);
             return leastPlayedWorkouts;
         }
     }

@@ -20,7 +20,7 @@ namespace EnduraGenius.API.Controllers
         private readonly IMuscleRepository _muscleRepository;
         private readonly IMapper _mapper;
         /// <summary>
-        /// Constructor for MusclesController
+        /// Constructor for MusclesController [ADMIN ONLY]
         /// </summary>
         public MusclesController(IMuscleRepository muscleRepository, IMapper mapper)
         {
@@ -29,7 +29,7 @@ namespace EnduraGenius.API.Controllers
         }
 
         /// <summary>
-        /// Get all muscles
+        /// Get all muscles [ADMIN ONLY]
         /// </summary>
         /// <returns>
         /// An <see cref="IActionResult"/> indicating the result of the operation:
@@ -43,7 +43,7 @@ namespace EnduraGenius.API.Controllers
         }
 
         /// <summary>
-        /// Get muscle by id
+        /// Get muscle by id [ADMIN ONLY]
         /// </summary>
         /// <param name="id"> id of the needed muscle</param>
         /// <returns>
@@ -63,7 +63,7 @@ namespace EnduraGenius.API.Controllers
         }
 
         /// <summary>
-        /// create a new muscle
+        /// create a new muscle [ADMIN ONLY]
         /// </summary>
         /// <param name="muscleForCreationDto">DTO contains muscle data</param>
         /// <returns>
@@ -84,7 +84,7 @@ namespace EnduraGenius.API.Controllers
         }
 
         /// <summary>
-        /// Update an existing muscle
+        /// Update an existing muscle [ADMIN ONLY]
         /// </summary>
         /// <param name="id">the id of the muscle to update</param>
         /// <param name="muscleForUpdateDto">DTO contains new Muscle Data</param>
@@ -106,7 +106,7 @@ namespace EnduraGenius.API.Controllers
         }
 
         /// <summary>
-        /// Delete an existing muscle
+        /// Delete an existing muscle [ADMIN ONLY]
         /// </summary>
         /// <param name="id">the id of the muscle</param>
         /// <returns>

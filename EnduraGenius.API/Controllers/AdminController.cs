@@ -28,7 +28,7 @@ namespace EnduraGenius.API.Controllers
         }
 
         /// <summary>
-        /// Register new admin account
+        /// Register new admin account [ADMIN ONLY]
         /// </summary>
         /// <param name="registerRequestDto">DTO contains user data</param>
         /// <returns>

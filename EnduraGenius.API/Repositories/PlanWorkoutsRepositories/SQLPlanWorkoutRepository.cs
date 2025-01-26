@@ -15,7 +15,6 @@ namespace EnduraGenius.API.Repositories.PlanWorkoutsRepositories
         {
             try
             {
-                Console.WriteLine("new workout : "+Workout.Id);
                 var workoutplan = new PlanWorkout
                 {
                     Plan = plan,

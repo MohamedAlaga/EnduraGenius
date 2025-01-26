@@ -75,7 +75,7 @@ namespace EnduraGenius.API.Controllers
         }
 
         /// <summary>
-        /// Create a new workout
+        /// Create a new workout [ADMIN ONLY]
         /// </summary>
         /// <param name="createWorkoutRequestDTO">DTO contains new Workout data</param>
         /// <returns>
@@ -86,7 +86,7 @@ namespace EnduraGenius.API.Controllers
         /// - Returns a 404 NotFound response if the muscles are not found.
         /// </returns>
         [HttpPost]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateWorkout([FromBody] CreateWorkoutRequestDTO createWorkoutRequestDTO)
         {
             var userId = _authRepository.GetCurrentUserId();
@@ -116,7 +116,7 @@ namespace EnduraGenius.API.Controllers
         }
 
         /// <summary>
-        /// Update a workout
+        /// Update a workout [ADMIN ONLY]
         /// </summary>
         /// <param name="id">workout to be updated</param>
         /// <param name="updateWorkoutDto">DTO contains the new workout data</param>
@@ -128,7 +128,7 @@ namespace EnduraGenius.API.Controllers
         /// </returns>
         [HttpPut]
         [Route("{id:Guid}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateWorkout([FromRoute] Guid id, [FromBody] GetWorkoutDto updateWorkoutDto)
         {
             var workout = await _workoutsRepository.GetWorkoutById(id);
@@ -145,7 +145,7 @@ namespace EnduraGenius.API.Controllers
         }
 
         /// <summary>
-        /// Delete a workout
+        /// Delete a workout [ADMIN ONLY]
         /// </summary>
         /// <param name="id"></param>
         /// <returns>
@@ -155,7 +155,7 @@ namespace EnduraGenius.API.Controllers
         /// </returns>
         [HttpDelete]
         [Route("{id:Guid}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteWorkout([FromRoute] Guid id)
         {
             var workout = await _workoutsRepository.DeleteWorkout(id);
@@ -167,7 +167,7 @@ namespace EnduraGenius.API.Controllers
         }
 
         /// <summary>
-        /// Get all uncertified workouts
+        /// Get all uncertified workouts [ADMIN ONLY]
         /// </summary>
         /// <param name="filterOn">name of the param to filter results based on</param>
         /// <param name="filterQuery">search query</param>
@@ -179,7 +179,7 @@ namespace EnduraGenius.API.Controllers
         /// </returns>
         [HttpGet]
         [Route("uncertified")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUncertifiedWorkouts([FromQuery] string? filterOn, [FromQuery] string? filterQuery, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
         {
             var workouts = await _workoutsRepository.GetWorkouts(filterOn, filterQuery, pageNumber, pageSize, false);
@@ -187,7 +187,7 @@ namespace EnduraGenius.API.Controllers
         }
 
         /// <summary>
-        /// Change the certification status of a workout
+        /// Change the certification status of a workout [ADMIN ONLY]
         /// </summary>
         /// <param name="id">the id of the workout</param>
         /// <returns>
@@ -197,7 +197,7 @@ namespace EnduraGenius.API.Controllers
         /// </returns>
         [HttpPut]
         [Route("certify/{id:Guid}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ChangeCertificationStatus([FromRoute] Guid id)
         {
             var workout = await _workoutsRepository.ChangeCertificationStatus(id);
